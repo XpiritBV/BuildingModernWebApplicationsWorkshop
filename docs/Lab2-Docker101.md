@@ -118,12 +118,12 @@ Inspecting the running containers with `docker ps`, you should find that the ngi
 Next, start a container to run an instance of SQL Server on Linux. 
 The image for SQL Server for Linux is located in the Docker Store, since it is an official image. Navigate to https://hub.docker.com and search for SQL Server there. Pull the image when you found its name:
 ```
-docker pull mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+docker pull mcr.microsoft.com/mssql/server
 ```
 
 Use the command:
 ```
-docker run -e ACCEPT_EULA=Y -e MSSQL_PID=Developer -e SA_PASSWORD="Pass@word" --name sqldocker -p 5433:1433 -d mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+docker run -e ACCEPT_EULA=Y -e MSSQL_PID=Developer -e SA_PASSWORD="Pass@word" --name sqldocker -p 5433:1433 -d mcr.microsoft.com/mssql/server
 ```
 The SQL Server container is started detached, so it will not show any output other than the container ID:
 ```

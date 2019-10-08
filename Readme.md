@@ -1,6 +1,4 @@
-# Workshop Building modern web applications using .NET Core and Angular 
-## Architecting and implementing .NET Core solutions in a Docker ecosystem
-
+# Workshop Building modern web applications using .NET Core and Angular
 Welcome to the workshop "Building modern web applications using .NET Core and Angular". 
 
 In this workshop you will create a .NET Core application with a Single Page Application frontend and learn how to create and design a solution for modern web applications running in a Docker ecosystem.

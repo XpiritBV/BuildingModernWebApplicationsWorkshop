@@ -26,7 +26,7 @@ git checkout start
 Open the solution `Workshop.sln` in Visual Studio. Take your time to navigate the code and familiarize yourself with the various projects in the solution. You should be able to identify these:
 
 - `GamingWebApp`, an ASP.NET MVC Core frontend 
-- `Leaderboard.WebAPI`, an ASP.NET Core Web API
+- `LeaderboardWebApi`, an ASP.NET Core Web API
 
 For now, the SQL Server for Linux container instance is providing the developer backend for data storage. This will be changed later on. Make sure you run the SQL Server as described in [Lab 2](https://github.com/XpiritBV/ContainerWorkshop2018Docs/blob/master/Lab2-Docker101.md#lab-2---docker-101).
 
@@ -57,7 +57,7 @@ Make sure you know how this application is implemented. Set breakpoints if neces
 
 Visual Studio offers tooling for adding support to run your application in a Docker container. You will first add container support to the Web API project.
 
-To get started you can right-click the Leaderboard.WebAPI project and select Add, Container Orchestrator Support from the context menu. Choose `Docker Compose` as the local orchestrator from the dropdown.
+To get started you can right-click the LeaderboardWebApi project and select Add, Container Orchestrator Support from the context menu. Choose `Docker Compose` as the local orchestrator from the dropdown.
 
 <img src="images/AddContainerOrchestratorSupport.PNG" width="400" />
 
@@ -109,7 +109,7 @@ Choose the right place to make that change, considering that you are now running
 gamingwebapp:
   environment:
     - ASPNETCORE_ENVIRONMENT=Development
-    - LeaderboardApiOptions:BaseUrl=http://leaderboard.webapi
+    - LeaderboardApiOptions:BaseUrl=http://leaderboardwebapi
 ```
 
 Change the IP address of the connection string in the application settings for the Web API to be your local IP address (of your LAN) instead of `127.0.0.1`. This is a temporary fix.
