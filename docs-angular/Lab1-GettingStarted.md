@@ -32,6 +32,10 @@ npm install -g @angular/cli
 
 You can now initiate Angular CLI commands by typing `ng <command>` 
 
+## Reference material 
+
+https://angular.io/docs
+
 # Create new Angular application
 
 1. Create an Angular App with the Angular CLI
@@ -50,10 +54,10 @@ Do the following setup:
 
 SCSS and Less are also valid options, because they are also CSS Pre-processors. They provide a structured way of writing styles and which compiles to CSS. The Pre-processors do basically the same with some differences.
 
-3. Switch to angular-workshop application directory
+3. Switch to angular-application application directory
 
 ```sh
-cd ./angular-workshop
+cd ./angular-application
 ```
 
 4. Add Material Design Components
@@ -71,9 +75,39 @@ If you want to know more about Material Design and its components:
 - https://material.angular.io/
 - https://material.io/design/
 
+5. Add Material theme to styles.scss
+
+//TODO
+
+## Run the application
+
+The following command runs the Angular application using the package.json: `./angular-application/package.json `. Running the application like this makes you able to serve the application with for example a proxy.
+
+https://github.com/angular/angular-cli/blob/master/docs/documentation/stories/proxy.md
+
+``` sh
+npm start
+
+# package.json
+{
+  "name": "angular-application",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
+  },
+```
+
+Ofcourse you can also run the application `ng serve` from the command line.
+
+
 ## Replace boilerplate application content
 
-Replace the content of `angular-workshop/src/app/app.component` with the following:
+Replace the content of `./angular-application/src/app/app.component` with the following:
 
 ``` html
 <router-outlet></router-outlet>

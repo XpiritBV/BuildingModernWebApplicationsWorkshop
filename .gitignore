@@ -90,3 +90,6 @@ rcf/
 
 istio-1.2.5/
 .vscode/settings.json
+
+#Ignore the created angular application
+angular-application/
