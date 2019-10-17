@@ -50,7 +50,7 @@ Do the following setup:
 
 **Would you like to add Angular routing?** : (y)es
 
-**Which stylesheet format would you like to use?**: Sass
+**Which stylesheet format would you like to use?**: //TODO: SCSS
 
 SCSS and Less are also valid options, because they are also CSS Pre-processors. They provide a structured way of writing styles and which compiles to CSS. The Pre-processors do basically the same with some differences.
 
