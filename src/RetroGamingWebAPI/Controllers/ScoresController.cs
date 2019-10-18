@@ -12,6 +12,7 @@ using RetroGamingWebAPI.Models;
 namespace RetroGamingWebAPI.Controllers
 {
     [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [OpenApiTag("Scores", Description = "API to retrieve or post individual high scores")]
@@ -26,6 +27,7 @@ namespace RetroGamingWebAPI.Controllers
             this.mailService = mailService;
         }
 
+        [MapToApiVersion("2.0")]
         [HttpGet("{game}")]
         public async Task<IEnumerable<Score>> Get(string game)
         {

@@ -341,15 +341,8 @@ public ScoresController(RetroGamingContext context)
    this.context = context;
 }
 ```
-The controller will have two actions: a `GET` and a `POST` method to retrieve a particular score for a game, and to add a new score respectively.
+The controller will have a single `POST` action method to add a new score.
 ```c#
-[HttpGet("{game}")]
-public async Task<IEnumerable<Score>> Get(string game)
-{
-   var scores = context.Scores.Where(s => s.Game == game).Include(s => s.Gamer);
-   return await scores.ToListAsync().ConfigureAwait(false);
-}
-
 [HttpPost("{nickname}/{game}")]
 public async Task PostScore(string nickname, string game, [FromBody] int points)
 {
@@ -380,18 +373,7 @@ public async Task PostScore(string nickname, string game, [FromBody] int points)
    await context.SaveChangesAsync().ConfigureAwait(false);
 }
 ```
-Try the new controller by running your API and navigating to the `scores/Pacman` endpoint. You should get an error, even if all your code is correct.
-
-The reason is that our object model contains a circular reference. The serialization will fail because of this. You can fix this by introducing the Newtonsoft.Json serializer and configuring it to ignore reference loops. 
-Add a NuGet packages for `Microsoft.AspNetCore.Mvc.NewtonsoftJson` and change the configuration of the controllers in `ConfigureServices`.
-```C#
-options.FormatterMappings.SetMediaTypeMappingForFormat("json", new MediaTypeHeaderValue("application/json"));
-})
-.AddNewtonsoftJson(setup => {
-   setup.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-})
-```
-Try running the API again and see if it works correctly now.
+Use a tool like Postman to test the `POST` action.
 
 ## Using Dependency Injection
 .NET Core has a built-in dependency injection system and ASP.NET Core makes extensive use of this itself.  
@@ -519,6 +501,43 @@ Each of the two controllers need to have their route format changed and require 
 ```
 Make sure to replace the existing `[Route]` attribute.
 Also, change the startup URL for the web API to be `/api/v1/leaderboard` to reflect the change to route containing a version for the API.
+
+Now that we have a versioned API we can add a newer version. You can add a completely new controller with a `[ApiVersion("2.0")]` attribute on top. Alternatively, you can add a new action method in an existing controller and map it to a specific API version with the `[MapToVersion]` attribute on the method. 
+Add a new method to the `ScoresController` like so:
+```c#
+[HttpGet("{game}")]
+public async Task<IEnumerable<Score>> Get(string game)
+{
+   var scores = context.Scores.Where(s => s.Game == game).Include(s => s.Gamer);
+   return await scores.ToListAsync().ConfigureAwait(false);
+}
+
+```
+Try the new controller by running your API and navigating to the `api/v1/scores/Pacman` endpoint. You should get an error like this:
+```json
+{"error":{"code":"UnsupportedApiVersion","message":"The HTTP resource that matches the request URI 'https://localhost:5001/api/v1/scores/Pacman' does not support the API version '1'.","innerError":null}}
+```
+This is intended behavior, as the `[MapToApiVersion]` attribute excludes the GET action from the 1.0 version of the API.
+
+Next, try `api/v2/scores/Pacman`. You should get an error, even if all your code is completely correct.
+
+The reason is that our object model contains a circular reference. The serialization will fail because of this. You can fix this by introducing the Newtonsoft.Json serializer and configuring it to ignore reference loops. 
+Add a NuGet packages for `Microsoft.AspNetCore.Mvc.NewtonsoftJson` and change the configuration of the controllers in `ConfigureServices`.
+```C#
+options.FormatterMappings.SetMediaTypeMappingForFormat("json", new MediaTypeHeaderValue("application/json"));
+})
+.AddNewtonsoftJson(setup => {
+   setup.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+})
+```
+Try running the API again and see if it works correctly now.
+
+## Logging
+.NET Core comes with a logging infrastructure for all application types including ASP.NET Core and generic host. Examine the `Program.cs` file and see how the host is created using the `CreateDefaultBuilder` method. This method configures and bootstraps the .NET Core application. The default builder already registers several logging providers:
+- Console
+- Debug
+- EventSource
+- EventLog (only when running on Windows)
 
 
 ## Wrapup

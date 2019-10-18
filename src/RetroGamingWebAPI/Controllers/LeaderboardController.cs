@@ -32,6 +32,7 @@ namespace RetroGamingWebAPI.Controllers
         [HttpGet("{format?}")]
         [FormatFilter]
         [Produces("application/json")]
+        [MapToApiVersion("1.0")]
         public async Task<ActionResult<IEnumerable<HighScore>>> Get()
         {
             var scores = context.Scores
@@ -44,5 +45,30 @@ namespace RetroGamingWebAPI.Controllers
 
             return Ok(await scores.ToListAsync().ConfigureAwait(false));
         }
+
+        // GET api/leaderboard
+        /// <summary>
+        /// Retrieve a list of leaderboard scores.
+        /// </summary>
+        /// <returns>List of high scores per game.</returns>
+        /// <response code="200">The list was successfully retrieved.</response>
+        [ProducesResponseType(typeof(IEnumerable<HighScore>), 200)]
+        [HttpGet("{format?}")]
+        [FormatFilter]
+        [Produces("application/json")]
+        [MapToApiVersion("2.0")]
+        public async Task<ActionResult<IEnumerable<HighScore>>> GetV2(int limit)
+        {
+            var scores = context.Scores
+                .Select(score => new HighScore()
+                {
+                    Game = score.Game,
+                    Points = score.Points,
+                    Nickname = score.Gamer.Nickname
+                }).Take(limit);
+
+            return Ok(await scores.ToListAsync().ConfigureAwait(false));
+        }
+
     }
 }

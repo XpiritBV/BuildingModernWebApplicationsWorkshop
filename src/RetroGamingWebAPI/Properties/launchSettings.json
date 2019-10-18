@@ -18,7 +18,7 @@
     "RetroGamingWebAPI": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/leaderboard",
+      "launchUrl": "api/v1/leaderboard",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

@@ -11,5 +11,12 @@
             <returns>List of high scores per game.</returns>
             <response code="200">The list was successfully retrieved.</response>
         </member>
+        <member name="M:RetroGamingWebAPI.Controllers.LeaderboardController.GetV2(System.Int32)">
+            <summary>
+            Retrieve a list of leaderboard scores.
+            </summary>
+            <returns>List of high scores per game.</returns>
+            <response code="200">The list was successfully retrieved.</response>
+        </member>
     </members>
 </doc>

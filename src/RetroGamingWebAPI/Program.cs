@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 namespace RetroGamingWebAPI
 {
@@ -21,6 +23,13 @@ namespace RetroGamingWebAPI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .ConfigureLogging(builder =>
+                {
+                    IConfiguration configuration = builder.Services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+                    builder.AddApplicationInsights(configuration["ApplicationInsights:InstrumentationKey"]);
+                    builder.AddFilter<ApplicationInsightsLoggerProvider>("", LogLevel.Information);
+                }
+                );
     }
 }
