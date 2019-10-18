@@ -1,42 +1,43 @@
 # Lab 2 - Creating Components
 
-During lab you will create components with the Angular CLI to display highscores and add new scores using the Angular `FormBuilder`. You will learn how to navigate to these components using Angular `Routing`. The lab will also teach you how to use typesafe models with `Typescript`.
+During this lab you will create components with the Angular CLI to display high scores and add new scores using the Angular `FormBuilder`. You will learn how to navigate to these components using Angular `Routing`.
 
 Goals for this lab:
 
-- [Create a highscores component and display it](#inspect)
-- [Display highscores in a list](#manage)
+- [Creating and displaying components](#inspect)
+- [Displaying high scores in a list](#manage)
 - [Create a form using FormBuilder](#working)
 
-## Create a highscores component and display it
+## Creating and displaying components
 
 ### 1. Create the component with the Angular CLI
 
-The following will create a component where you are going to show highscores
+The following will create a component where you are going to show high scores
 
 ```sh
-ng generate component highscores/highscores-list
+ng generate component high-scores/high-scores-list --module=app
+
+# --module=app selects the AppModule to auto import this generated component
 
 # You can also write the command short-handed:
-# ng g c highscores/highscores-list
-
+# ng g c high-scores/high-scores-list --module=app
 ```
 
-The script created a component folder `./angular-application/src/app/highscores/highscores-list` containing 4 files:
+The script created a component folder `./angular-application/src/app/high-scores/high-scores-list` containing 4 files:
 
-- **\*.component.ts**
+**\*.component.ts**
 
-  - Here you will put the logic for the component and connects to the .html and .sass file.
+- Here you will put the logic for the component and connects to the .html and .sass file.
 
-- **\*.component.spec.ts**
+**\*.component.spec.ts**
 
   - With the spec class you are able to unit test your component
 
-- **\*.component.html**
+**\*.component.html**
 
   - This will show your content.
 
-- **\*.component.sass**
+**\*.component.scss**
   - The sass file gives you the oppurtunity to style the component. See 1. GettingStarted to learn more about Sass.
 
 The Angular CLI command also added your component to the `AppModule`. You can find this file in `./angular-application/src/app/app.module.ts`
@@ -45,8 +46,8 @@ The Angular CLI command also added your component to the `AppModule`. You can fi
 @NgModule({
   declarations: [
     AppComponent,
-    // Added component
-    HighscoresListComponent
+    // Automatically added component
+    HighScoresListComponent
     // #end
   ],
   imports: [BrowserModule, AppRoutingModule],
@@ -64,10 +65,10 @@ Make the following changes to the `AppRoutingModule` which is automatically gene
 
 ```ts
 const routes: Routes = [
-  // Added route
+  // Add this route
   {
     path: "",
-    component: HighscoresListComponent
+    component: HighScoresListComponent
   },
   // #end
 ];
@@ -79,7 +80,7 @@ const routes: Routes = [
 export class AppRoutingModule {}
 ```
 
-The `highscores-list` component is now the homepage of the Angular application
+The `high-scores-list` component is now the homepage of the Angular application
 
 ### 3. Run the application
 
@@ -87,19 +88,19 @@ The `highscores-list` component is now the homepage of the Angular application
 npm start
 ```
 
-You should now see the contents of the component: "highscores-list works!"
+You should now see the contents of the component: "high-scores-list works!"
 
-## Display highscores in a list
+## Displaying high scores in a list
 
-For this chapter you will need the component you created in the previous chapter: `./angular-application/src/app/highscores/highscores-list/*`
+For this chapter you will need the component you created in the previous chapter: `./angular-application/src/app/high-scores/high-scores-list/*`
 
-### 1. Create a model to hold highscores
+### 1. Create a model to hold high scores
 
-Create a the following file `./angular-application/src/shared/models/highscore.ts`
+Create a the following file `./angular-application/src/shared/models/high-score.ts`
 
 // TODO: 
 ```ts
-interface Highscore {
+interface HighScore {
 
   nickname: string;
 
@@ -115,24 +116,24 @@ The `highscore.ts` is in a shared folder, so it can easily be used throughout th
 
 An interface is used because you are only interested in the properties (signature) of a highscore. Later you will see that these properties directly map onto the results from the API.
 
-### 2. Create highscores
+### 2. Create high scores
 
-Create a list of highscores in the following file `./angular-application/src/app/highscores/highscores-list/highscores-list.component.ts`
+Create a list of high scores in the following file `./angular-application/src/app/high-scores/high-scores-list/high-scores-list.component.ts`
  
 ```ts
 @Component({
-  selector: 'app-highscores-list',
-  templateUrl: './highscores-list.component.html',
-  styleUrls: ['./highscores-list.component.sass']
+  selector: 'app-high-scores-list',
+  templateUrl: './high-scores-list.component.html',
+  styleUrls: ['./high-scores-list.component.scss']
 })
-export class HighscoresListComponent implements OnInit {
+export class HighScoresListComponent implements OnInit {
 
-  public highscores: Highscore[];
+  public highScores: HighScore[];
 
   constructor() { }
 
   ngOnInit() {
-    this.highscores = [
+    this.highScores = [
       {
         nickname: "developerDays",
         game: "Awesome Angular Workshop"
@@ -148,71 +149,18 @@ export class HighscoresListComponent implements OnInit {
 }
 ```
 
-### 3. Import Material Design in your AppModule
 
-- Create a new Module to include all your Material Design Modules
+### 4. Display high scores using Material components
 
-```sh
-ng g module AppMaterial --flat=true
-
-# Generates a module which includes all Material Modules used in this application
-# --flat creates the module file without a directory
-```
-
-The above command generates the following file `./angular-application/src/app/app-material-components.module.ts`
-
-Replace the module's content with the following Material Modules which you are going to use throughout the application:
-
-```ts
-@NgModule({
-  declarations: [],
-  imports: [
-    CommonModule,
-    MatListModule,
-    MatIconModule
-  ],
-  exports: [
-    MatListModule,
-    MatIconModule
-  ]
-})
-export class AppMaterialModule { }
-```
-
-- Import the `AppMaterialModule` in your AppModule file `./angular-application/src/app/app.module.ts` 
-
-```ts
-@NgModule({
-  declarations: [
-    AppComponent,
-    HighscoresListComponent
-  ],
-  imports: [
-    BrowserModule, 
-    AppRoutingModule,
-    // Added module
-    AppMaterialModule
-    // #end
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
-export class AppModule {}
-```
-
-The reason for creating a separate Module is because the amount of Material Modules can grow fast and this pollutes the `app.module.ts` file
-
-### 4. Display highscores using Material components
-
-Display the highscores in the following file `./angular-application/src/app/highscores/highscores-list/highscores-list.component.html`
+Display the high scores in the following file `./angular-application/src/app/high-scores/high-scores-list/high-scores-list.component.html`
 
 ``` html
 <mat-list>
-  <mat-list-item *ngFor="let highscore of highscores">
+  <mat-list-item *ngFor="let highScore of highScores">
     <mat-icon matListIcon>dvr</mat-icon>
-    <h3 matLine>{{ highscore.name }}</h3>
+    <h3 matLine>{{ highScore.name }}</h3>
     <p matLine>
-      <span> {{ highscore.score }} </span>
+      <span> {{ highScore.score }} </span>
     </p>
   </mat-list-item>
 </mat-list>
@@ -222,21 +170,21 @@ Display the highscores in the following file `./angular-application/src/app/high
 - **matLine** is an Angular directive which adds new functionality to the component, like showing text below eachother.
 
 
-## Add new scores
+## Adding new scores
 
-In this chapter you are going to create a new page, navigate to it and display a form using the Angular `FormBuilder`
+In this chapter you are going to create a new page, navigate to it and display a form using the Angular `FormBuilder`, TODO: reactive components
 
 ### 1. Create a new add score page
 
-Create a new component, just like you did with the highscores
+Create a new component, just like you did with the high scores
 
 ```sh
-ng generate component highscores/add-score --module=app
+ng generate component high-scores/add-score --module=app
 
 # --module=app selects the AppModule to auto import this generated component
 ```
 
-The following component is generated:  `./angular-application/src/app/highscores/add-score/*`
+The following component is generated:  `./angular-application/src/app/high-scores/add-score/*`
 
 ### 2. Navigate to the add score page
 
@@ -246,7 +194,7 @@ The following component is generated:  `./angular-application/src/app/highscores
 const routes: Routes = [
   {
     path: "",
-    component: HighscoresListComponent
+    component: HighScoresListComponent
   },
   // Added route
   {
@@ -265,7 +213,7 @@ export class AppRoutingModule {}
 
 - Add a (router)Link to the `add-score` page
 
-Add the following to the highscores-list component `./angular-application/src/app/highscores/highscores-list/highscores-list.component.html`
+Add the following to the high-scores-list component `./angular-application/src/app/high-scores/high-scores-list/high-scores-list.component.html`
 
 ```html
 <mat-list>
@@ -307,11 +255,11 @@ Create a new form with Material components
 </form>
 ```
 
-Let's add some style to the component for better spacing`./angular-application/src/app/highscores/add-score/add-score.component.scss`
+Let's add some style to the component for better spacing`./angular-application/src/app/high-scores/add-score/add-score.component.scss`
 
 //TODO SCSS
 ```sass
-.add-score-form
+.add-score-form {
     margin: 16px
     max-width: 600px
 
@@ -323,4 +271,5 @@ Let's add some style to the component for better spacing`./angular-application/s
 
     .form-button
         display: block
+}
 ```
