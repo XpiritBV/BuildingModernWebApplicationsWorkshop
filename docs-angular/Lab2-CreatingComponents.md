@@ -381,4 +381,6 @@ Also make the following changes to the html in file `./angular-application/src/a
 
 ## Wrap up
 
-In this lab
+In this lab you have created components and navigated to them using the Angular Router. You used Material components to enhance your application and Angular Reactive Forms to get data from your form. In the next lab you will connect the components to the .NET Core API created in the earlier Labs.
+
+Continue with [Lab 3](Lab3-ConnectToAPI.md).
