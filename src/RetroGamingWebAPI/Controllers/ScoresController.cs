@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NSwag.Annotations;
 using RetroGamingWebAPI.Infrastructure;
 using RetroGamingWebAPI.Models;
 
@@ -12,6 +13,7 @@ namespace RetroGamingWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [OpenApiTag("Scores", Description = "API to retrieve or post individual high scores")]
     public class ScoresController : ControllerBase
     {
         private readonly RetroGamingContext context;

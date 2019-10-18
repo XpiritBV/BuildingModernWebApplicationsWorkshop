@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using RetroGamingWebAPI.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NSwag.AspNetCore;
 
 namespace RetroGamingWebAPI
 {
@@ -36,6 +37,12 @@ namespace RetroGamingWebAPI
 
             services.AddTransient<IMailService, MailService>();
 
+            services.AddOpenApiDocument(document =>
+            {
+                document.DocumentName = "v1";
+                document.PostProcess = d => d.Info.Title = "Retro Gaming Web API v1.0 OpenAPI";
+            });
+
             services
                 .AddControllers(options => {
                     options.RespectBrowserAcceptHeader = true;
@@ -53,11 +60,24 @@ namespace RetroGamingWebAPI
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
             RetroGamingContext context)
         {
+            app.UseOpenApi(config =>
+            {
+                config.DocumentName = "v1";
+                config.Path = "/openapi/v1.json";
+            });
+
             if (env.IsDevelopment())
             {
                 DbInitializer.Initialize(context).Wait();
                 app.UseStatusCodePages();
                 app.UseDeveloperExceptionPage();
+                app.UseSwaggerUi3(config =>
+                {
+                    config.SwaggerRoutes.Add(new SwaggerUi3Route("v1.0", "/openapi/v1.json"));
+
+                    config.Path = "/openapi";
+                    config.DocumentPath = "/openapi/v1.json";
+                });
             }
 
             app.UseRouting();

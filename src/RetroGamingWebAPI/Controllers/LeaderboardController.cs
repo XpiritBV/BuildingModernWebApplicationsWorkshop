@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NSwag.Annotations;
 using RetroGamingWebAPI.Infrastructure;
 using RetroGamingWebAPI.Models;
 using System.Collections.Generic;
@@ -10,9 +11,9 @@ namespace RetroGamingWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [OpenApiTag("Leaderboard", Description = "API to retrieve high score leaderboard")]
     public class LeaderboardController : ControllerBase
     {
-        private readonly List<HighScore> scores;
         private readonly RetroGamingContext context;
 
         public LeaderboardController(RetroGamingContext context)

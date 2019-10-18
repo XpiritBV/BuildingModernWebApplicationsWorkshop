@@ -116,7 +116,7 @@ Give it another try. Start the project in Visual Studio 2019 by switching the ho
 ```cmd
 C:\Sources\Workshop> dotnet run
 ```
-In Visual Studio Code you will also press F5 and configure the .
+In Visual Studio Code you will also press F5 and configure the launch setting to select the .NET Core debug environment.
 
 Navigate to https://localhost:5001/api/leaderboard using a browser. When hosting in Visual Studio 2019 using IIS Express, the port number will most likely be in the 44000+ range. You should see a JSON array of the hard-coded values displayed in the browser.
 
@@ -192,7 +192,13 @@ services
 These options will enable the use of `ACCEPT` headers in a browser request.
 Returning XML requires one of the two available XML formatters `XmlSerializerFormatter` and `XmlDataContractSerializerFormatter`, which follow the W3C and Micrsosoft's DataContract rules for serialization respectively.
 
-Run your Web API again and notice the returned data format. It is now XML instead of JSON. Can you figure out why this is the case?
+TODO: XmlSerializerFormatter
+```C#
+.AddXmlSerializerFormatters();
+```
+
+> #### Question:
+> Run your Web API again and notice the returned data format. It is now XML instead of JSON. Can you figure out why this is the case?
 
 Use Postman to send a request with an ACCEPT header of `application/json`. Also try:
 ```
@@ -425,7 +431,42 @@ mailService.SendMail($"New high score of {score.Points} for game '{score.Game}'"
 ```
 
 Verify that the mail service object is resolved and injected correctly and that the API still works.
- 
+
+## Adding OpenAPI support 
+
+[OpenAPI](https://www.openapis.org/about) is the REST equivalent for modern web APIs that WSDL was for SOAP web services. It is a convenient way to describe your REST API and is a vendor neutral standard. 
+
+You will add support for OpenAPI and also add a Swagger user interface to interact with your web API based on the metadata in the OpenAPI description. We will use NSwag, but you are free to choose an alternative like Swashbuckle. 
+
+
+Start by adding a reference to the NuGet package `NSwag.AspNetCore` in the project. 
+Next, register the services for NSwag in the `ConfigureServices` method of the `Startup` class.
+```c#
+services.AddOpenApiDocument(document =>
+{
+      document.DocumentName = "v1";
+      document.PostProcess = d => d.Info.Title = "Retro Gaming Web API v1.0 OpenAPI";
+});
+```
+The OpenAPI is served with custom middleware, so add it to the pipeline configuration in the `Configure` method:
+```c#
+app.UseOpenApi(config =>
+{
+      config.DocumentName = "v1";
+      config.Path = "/openapi/v1.json";
+});
+```
+and for development purposes add the Swagger user interface as well:
+```c#
+app.UseSwaggerUi3(config =>
+{
+   config.SwaggerRoutes.Add(new SwaggerUi3Route("v1.0", "/openapi/v1.json"));
+
+   config.Path = "/openapi";
+   config.DocumentPath = "/openapi/v1.json";
+});
+``` 
+
 ## Wrapup
 You have just learned some of the basic ...
 
