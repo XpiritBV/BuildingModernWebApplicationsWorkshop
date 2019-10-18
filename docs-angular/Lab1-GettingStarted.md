@@ -177,7 +177,7 @@ html, body { /* ... */}
 body { /* ... */ }
 
 /* Import material theme css */
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 /* #end */
 
 /* You can choose the following pre-built theme colors:  
@@ -199,15 +199,15 @@ Replace the content of `./angular-application/src/app/app.component.html` with t
 ```html
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span>Angular Workshop</span>
+    <span>Angular Workshop - High scores</span>
     <span class="example-spacer"></span>
-    <mat-icon class="example-icon">add</mat-icon>
+    <a mat-icon-button color="white">
+      <mat-icon>add</mat-icon>
+    </a>
   </mat-toolbar-row>
 </mat-toolbar>
 
-<div class="app-container">
-  <router-outlet></router-outlet>
-</div>
+<router-outlet></router-outlet>
 ```
 
 A Material toolbar is shown on every page on the top of the page.

@@ -6,7 +6,7 @@ Goals for this lab:
 
 - [Creating and displaying components](#inspect)
 - [Displaying high scores in a list](#manage)
-- [Create a form using FormBuilder](#working)
+- [Creating an add score form using FormBuilder](#working)
 
 ## Creating and displaying components
 
@@ -27,18 +27,19 @@ The script created a component folder `./angular-application/src/app/high-scores
 
 **\*.component.ts**
 
-- Here you will put the logic for the component and connects to the .html and .sass file.
+- The typescript file connects with the .html and scss files. This file will also contain all the logic for the component.
 
 **\*.component.spec.ts**
 
-  - With the spec class you are able to unit test your component
+- With the spec class you are able to unit test your component. 
 
 **\*.component.html**
 
-  - This will show your content.
+- This will show your content.
 
 **\*.component.scss**
-  - The sass file gives you the oppurtunity to style the component. See 1. GettingStarted to learn more about Sass.
+
+- The scss file styles the component.
 
 The Angular CLI command also added your component to the `AppModule`. You can find this file in `./angular-application/src/app/app.module.ts`
 
@@ -50,14 +51,16 @@ The Angular CLI command also added your component to the `AppModule`. You can fi
     HighScoresListComponent
     // #end
   ],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [
+    /* ... */
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
 ```
 
-In the AppModule you declare what components are available for use in your application.
+In the `AppModule` you declare what components are available for use in your application.
 
 ### 2. Display the component
 
@@ -80,7 +83,7 @@ const routes: Routes = [
 export class AppRoutingModule {}
 ```
 
-The `high-scores-list` component is now the homepage of the Angular application
+The `app-high-scores-list` component is now the homepage of the Angular application
 
 ### 3. Run the application
 
@@ -90,6 +93,10 @@ npm start
 
 You should now see the contents of the component: "high-scores-list works!"
 
+> #### Suggestion
+> 
+> Run the application to see the following: "high-scores-list works!"
+
 ## Displaying high scores in a list
 
 For this chapter you will need the component you created in the previous chapter: `./angular-application/src/app/high-scores/high-scores-list/*`
@@ -98,59 +105,53 @@ For this chapter you will need the component you created in the previous chapter
 
 Create a the following file `./angular-application/src/shared/models/high-score.ts`
 
-// TODO: 
 ```ts
 interface HighScore {
-
   nickname: string;
-
   game: string;
-
   points: number;
 }
 ```
 
-The `highscore.ts` is in a shared folder, so it can easily be used throughout the whole application when the application grows larger.
+The `high-score.ts` is in a shared folder, so it can easily be used throughout the whole application when the application grows larger.
 
-**interface vs class**
+> **interface vs class**
+>
+> An interface is used because you are only interested in the properties (signature) of a high score. Later you will see that these properties directly map onto the results from the API.
 
-An interface is used because you are only interested in the properties (signature) of a highscore. Later you will see that these properties directly map onto the results from the API.
-
-### 2. Create high scores
+### 2. Create a list of high scores
 
 Create a list of high scores in the following file `./angular-application/src/app/high-scores/high-scores-list/high-scores-list.component.ts`
  
 ```ts
 @Component({
-  selector: 'app-high-scores-list',
-  templateUrl: './high-scores-list.component.html',
-  styleUrls: ['./high-scores-list.component.scss']
+  selector: "app-high-scores-list",
+  templateUrl: "./high-scores-list.component.html",
+  styleUrls: ["./high-scores-list.component.scss"]
 })
 export class HighScoresListComponent implements OnInit {
-
   public highScores: HighScore[];
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.highScores = [
       {
-        nickname: "developerDays",
-        game: "Awesome Angular Workshop"
-        points: 231019
+        nickname: "LX360" /* Alex Thissen gamertag */,
+        game: "Pac-Man",
+        points: 96070
       },
       {
-        namename: "Thijs Limmen",
-        game: "Alarm Clock",
-        points: 0600
+        nickname: "Who is Thijs" /* Thijs Limmen gamertag */,
+        game: "Space Invaders",
+        points: 7028
       }
     ];
   }
 }
 ```
 
-
-### 4. Display high scores using Material components
+### 3. Display high scores using Material components
 
 Display the high scores in the following file `./angular-application/src/app/high-scores/high-scores-list/high-scores-list.component.html`
 
@@ -158,19 +159,21 @@ Display the high scores in the following file `./angular-application/src/app/hig
 <mat-list>
   <mat-list-item *ngFor="let highScore of highScores">
     <mat-icon matListIcon>dvr</mat-icon>
-    <h3 matLine>{{ highScore.name }}</h3>
-    <p matLine>
-      <span> {{ highScore.score }} </span>
-    </p>
+    <h3 matLine>{{ highScore.game }}: {{ highScore.points }}</h3>
+    <p matLine>{{ highScore.nickname }}</p>
   </mat-list-item>
 </mat-list>
 ```
+ 
+- \<mat-list-item> is again an example of a Material component, which is imported in the `AppMaterialModule`
+- **matListIcon** is an Angular directive which makes sure the icon is aligned left of the text.
+- **matLine** is an Angular directive which adds additional functionality to the html components (showing text below eachother).
 
-- \<mat-list-item> is an example of a Material component. 
-- **matLine** is an Angular directive which adds new functionality to the component, like showing text below eachother.
+> #### Suggestion
+> 
+> Run the application to view the high scores list
 
-
-## Adding new scores
+## Creating an add score form using FormBuilder
 
 In this chapter you are going to create a new page, navigate to it and display a form using the Angular `FormBuilder`, TODO: reactive components
 
@@ -196,7 +199,7 @@ const routes: Routes = [
     path: "",
     component: HighScoresListComponent
   },
-  // Added route
+  // Add add score route
   {
     path: "add-score",
     component: AddScoreComponent
@@ -221,24 +224,37 @@ Add the following to the high-scores-list component `./angular-application/src/a
 </mat-list>
 
 <!-- Added link -->
-<a [routerLink]="['/add-score']">Add Score</a>
+<a mat-button color="primary" [routerLink]="['/add-score']">Submit new Score</a>
 <!-- #end -->
 ```
 
+You could optionally also add a routerlink in the material Toolbar in file `./angular-application/src/app/app.component.html`
 
-### 3. Create a form using FormBuilder
+```html
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <!-- ... -->
+    <a mat-icon-button color="white" [routerLink]="['/add-score']">
+      <mat-icon>add</mat-icon>
+    </a>
+  </mat-toolbar-row>
+</mat-toolbar>
+<!-- ... -->
+```
 
-Create a new form with Material components
+### 3. Create a form with Material Input components
+
+Create a new form with Material components in the new add score component `./angular-application/src/app/high-scores/add-score/add-score.component.scss`
 
 ```html
 <form class="add-score-form">
   <mat-form-field class="input-nickname">
-    <input matInput placeholder="Nickname" />
+    <input matInput formControlName="nickname" required placeholder="Nickname" />
   </mat-form-field>
 
   <mat-form-field class="input-game">
     <mat-label>Games</mat-label>
-    <mat-select required>
+    <mat-select formControlName="game">
       <mat-option value="developerdays">Developer Days</mat-option>
       <mat-option value="alarmclock">Alarm Clock</mat-option>
       <mat-option value="linesofcode">Lines of Code</mat-option>
@@ -246,30 +262,123 @@ Create a new form with Material components
   </mat-form-field>
 
   <mat-form-field>
-    <input type="number" matInput placeholder="Points" value="0" />
+    <input matInput formControlName="points" type="number" placeholder="Points" value="0" />
   </mat-form-field>
 
-  <button class="form-button" mat-raised-button color="primary">
+  <button class="form-button" (click)="submitScore()" mat-raised-button color="primary">
     Submit Score
   </button>
 </form>
 ```
 
-Let's add some style to the component for better spacing`./angular-application/src/app/high-scores/add-score/add-score.component.scss`
+In this form you see the following:
+- Material Input and Material Select components to enhance the form
+- `formControlName` for using Angular Reactive Forms in a moment
+- `required` to mark input as required
+- `(click)="submitScore()"` which will call a function inside the typescript component file.
 
-//TODO SCSS
-```sass
+Let's add some style to the component for better spacing `./angular-application/src/app/high-scores/add-score/add-score.component.scss`
+
+```scss
 .add-score-form {
-    margin: 16px
-    max-width: 600px
+  margin: 16px;
+  max-width: 600px;
 
-    .input-nickname
-        width: 100%
+  .input-nickname {
+    width: 100%;
+  }
 
-    .input-game
-        margin-right: 20px
+  .input-game {
+    margin-right: 20px;
+  }
 
-    .form-button
-        display: block
+  .form-button {
+    display: block;
+  }
 }
 ```
+
+As you can see above the css classes are nested, which means only classes within `.add-score-form` are affected, for example: `.add-score-form .input-nickname` in casual CSS.
+
+
+
+### 4. Use Reactive Forms to add scores
+
+Add the `ReactiveFormsModule` to the `AppModule` in file `./angular-application/src/app/app.module.ts`
+
+```ts
+@NgModule({
+  declarations: [
+    /* ... */
+  ],
+  imports: [
+    /* ... */
+    /* Add this module */
+    ReactiveFormsModule
+    /* #end */
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+Create the form using Angular `FormBuilder` in file `./angular-application/src/app/high-scores/add-score/add-score.component.ts`
+
+```ts
+@Component({
+  selector: "app-add-score",
+  templateUrl: "./add-score.component.html",
+  styleUrls: ["./add-score.component.scss"]
+})
+export class AddScoreComponent implements OnInit {
+  addScoreForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit() {
+    this.addScoreForm = this.fb.group({
+      nickname: ["", Validators.required]],
+      game: [""],
+      points: [0]
+    });
+  }
+
+  submitScore(): void {
+    console.log(this.addScoreForm.value);
+  }
+}
+```
+
+Also make the following changes to the html in file `./angular-application/src/app/high-scores/add-score/add-score.component.html` to attach the `addScoreForm`. The properties in the created `addScoreForm` map to the `formControlName` in the html file. 
+
+```html
+<!-- add [formGroup]="addScoreForm" to the <form> -->
+<form class="add-score-form" [formGroup]="addScoreForm">
+<!-- #end -->
+  <!-- ... -->
+
+
+  <!-- Show status of the addScoreForm -->
+  <p>
+    Form Status: {{ addScoreForm.status }}
+  </p>
+  <!-- #end -->
+  <!-- ... -->
+</form>
+```
+
+
+> #### Suggestion:
+>
+> Run the application and press the button. you should now see the values of the form logged to your developer console. Press F12 in Google Chrome for example to view the logs.
+
+
+> #### Pro tip:
+>
+> Go to https://angular.io/guide/reactive-forms to learn more about Angular Reactive Forms
+
+
+## Wrap up
+
+In this lab
