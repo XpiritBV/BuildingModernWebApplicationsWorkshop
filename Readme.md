@@ -20,7 +20,7 @@ Additionally, for hosting a container cluster in Microsoft Azure you will need a
 - [Lab 3 - Dockerizing .NET Core](docs/Lab3-DockerizingNETCore.md)
 - [Lab 4 - Networking](docs/Lab4-Networking.md)
 - [Lab 5 - Environments](docs/Lab5-Environments.md)
-- [Lab 6 - Creating an Anuglar UI](docs/Lab6-AnuglarUI.md)
+- [Lab 6 - Creating an Angular UI](docs/Lab6-AngularUI.md)
 - [Lab 7 - SPA for Web APIs](docs/Lab7-SPAWebAPI.md)
 - [Lab 8 - Registries and clusters](docs/Lab8-RegistriesClusters.md)
 - [Lab 9 - Security](docs/Lab9-Security.md)
