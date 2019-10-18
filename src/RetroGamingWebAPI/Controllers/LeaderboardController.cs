@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace RetroGamingWebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [OpenApiTag("Leaderboard", Description = "API to retrieve high score leaderboard")]
     public class LeaderboardController : ControllerBase
@@ -21,6 +22,13 @@ namespace RetroGamingWebAPI.Controllers
             this.context = context;
         }
 
+        // GET api/leaderboard
+        /// <summary>
+        /// Retrieve a list of leaderboard scores.
+        /// </summary>
+        /// <returns>List of high scores per game.</returns>
+        /// <response code="200">The list was successfully retrieved.</response>
+        [ProducesResponseType(typeof(IEnumerable<HighScore>), 200)]
         [HttpGet("{format?}")]
         [FormatFilter]
         [Produces("application/json")]

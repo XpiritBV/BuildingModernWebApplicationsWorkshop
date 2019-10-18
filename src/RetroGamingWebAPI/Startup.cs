@@ -13,6 +13,8 @@ using RetroGamingWebAPI.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NSwag.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace RetroGamingWebAPI
 {
@@ -43,6 +45,8 @@ namespace RetroGamingWebAPI
                 document.PostProcess = d => d.Info.Title = "Retro Gaming Web API v1.0 OpenAPI";
             });
 
+            ConfigureVersioning(services);
+
             services
                 .AddControllers(options => {
                     options.RespectBrowserAcceptHeader = true;
@@ -54,6 +58,17 @@ namespace RetroGamingWebAPI
                     setup.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
                 .AddXmlSerializerFormatters();
+        }
+
+        private void ConfigureVersioning(IServiceCollection services)
+        {
+            services.AddApiVersioning(options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ReportApiVersions = true;
+                options.ApiVersionReader = new UrlSegmentApiVersionReader();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

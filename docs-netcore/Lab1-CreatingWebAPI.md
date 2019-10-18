@@ -465,7 +465,61 @@ app.UseSwaggerUi3(config =>
    config.Path = "/openapi";
    config.DocumentPath = "/openapi/v1.json";
 });
-``` 
+```
+Decorate the `LeaderboardController` and `ScoresController` classes with the `[OpenAPITag]` attribute:
+```c#
+// LeaderboardController.cs
+[OpenApiTag("Leaderboard", Description = "API to retrieve high score leaderboard")]
+```
+```C#
+// ScoresController.cs
+[OpenApiTag("Scores", Description = "API to retrieve or post individual high scores")]
+```
+
+You can include additional metadata to enrich the OpenAPI documentation. Add XML comments and attributes on top of the individual action methods to indicate the type of data that is accepted and returned. Include this fragment on top of the `GET` action method in the `LeaderboarController` class. 
+```c#
+// GET api/leaderboard
+/// <summary>
+/// Retrieve a list of leaderboard scores.
+/// </summary>
+/// <returns>List of high scores per game.</returns>
+/// <response code="200">The list was successfully retrieved.</response>
+[ProducesResponseType(typeof(IEnumerable<HighScore>), 200)]
+```
+The generation of XML documentation can be triggered by checking the `XML Documentation File` checkbox on the Build tab in the project properties dialog of Visual Studio 2019, or by adding the following to the `RetroGamingWebAPI.csproj` file:
+```xml
+<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+   <DocumentationFile>C:\Sources\Workshop\RetroGamingWebAPI\RetroGamingWebAPI.xml</DocumentationFile>
+</PropertyGroup>
+```
+Run your web API and navigate to `/openapi` to view the Swagger UI 3.0. Use the Leaderboard `GET` action method to retrieve the list of high scores and try the Scores API to `POST` a new high score for the gamer `LX360`.
+
+## Versioning
+A production level web API needs to be versioned for proper lifecycle management. You will add support for versioning of the API.
+Again, you will need a new NuGet package for the versioning support. Add a reference to `Microsoft.AspNetCore.Mvc.Versioning` and create a new method in the `Startup` class.
+```c#
+private void ConfigureVersioning(IServiceCollection services)
+{
+   services.AddApiVersioning(options => {
+      options.AssumeDefaultVersionWhenUnspecified = true;
+      options.DefaultApiVersion = new ApiVersion(1, 0);
+      options.ReportApiVersions = true;
+      options.ApiVersionReader = new UrlSegmentApiVersionReader();
+   });
+}
+```
+This code will register a default 1.0 API version, read from the URL of the request. Make sure the method is called from  `ConfigureServices`, passing the `IServiceCollection`.
+```c#
+ConfigureVersioning(services);
+```
+Each of the two controllers need to have their route format changed and require a API version. Annotate the `LeaderboardController` and `ScoresController` classes with the following attributes:
+```c#
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
+```
+Make sure to replace the existing `[Route]` attribute.
+Also, change the startup URL for the web API to be `/api/v1/leaderboard` to reflect the change to route containing a version for the API.
+
 
 ## Wrapup
 You have just learned some of the basic ...

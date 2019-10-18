@@ -11,7 +11,8 @@ using RetroGamingWebAPI.Models;
 
 namespace RetroGamingWebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [OpenApiTag("Scores", Description = "API to retrieve or post individual high scores")]
     public class ScoresController : ControllerBase
