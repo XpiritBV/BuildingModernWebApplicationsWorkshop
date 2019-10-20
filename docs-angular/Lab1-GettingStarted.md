@@ -127,7 +127,8 @@ import {
   MatInputModule,
   MatButtonModule,
   MatSelectModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatRippleModule
 } from '@angular/material';
 
 @NgModule({
@@ -139,7 +140,8 @@ import {
     MatIconModule,
     MatInputModule,
     MatButtonModule,
-    MatSelectModule
+    MatSelectModule,
+    MatRippleModule
   ]
 })
 export class AppMaterialModule { }
