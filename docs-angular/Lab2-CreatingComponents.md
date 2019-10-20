@@ -114,7 +114,7 @@ Create a model interface to hold high scores
 ```sh
 ng generate interface shared/models/high-score
 
-# short-hand script:
+# short-hand command:
 # ng g i shared/models/high-score
 ```
 
