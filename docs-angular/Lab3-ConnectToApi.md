@@ -1,6 +1,6 @@
 # Lab 3 - Connect to the API
 
-In this lab you will use the components you have created and connect them to the .NET Core API. You will learn about managing state in services and about RXjs Subjects and Observables.
+In this lab you will use the components you have created and connect them to the .NET Core API. You will learn about generating an OpenAPI client inside your Angular application and using it to GET and POST.
 
 Goals for this lab:
 
@@ -58,102 +58,161 @@ Import the `ApiModule` and `HttpClientModule` in the AppModule in file `./angula
 export class AppModule { }
 ```
 
-### 4. TODO: CORS ISSUES & OpenAPI V1 and V2 get issue
+`.forRoot()` is used when a module is "eager," that is, it is not lazy-loaded (loads when the application starts).
+
+`rootUrl` is the url to the Leaderboards API
+
+### 4. Remove the old high-score.ts model and fix imports to new api model
+
+In the previous lab you have created a high-score.ts. You can now safely remove it, because of the automatically generated model from the OpenAPI client generator. 
+
+1. Remove file: `./angular-application/src/app/shared/models/high-score.ts`
+2. Fix imports to the new high-score model: `./angular-application/src/app/shared/api/leaderboards-api/models/high-score.ts`
+
+
+### 5. TODO: CORS ISSUES & OpenAPI V1 and V2 get issue
 
 ```cs
 // Fix commenting out GetV2 in LeaderboardsController
 
 
 // Fix in Startup.CS
-readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+readonly string MyAllowSpecificOrigins = "_myAllowAllCors";
 
-services.AddCors(options =>
-        {
-            options.AddPolicy(MyAllowSpecificOrigins,
-            builder =>
+ services.AddCors(options =>
             {
-                builder.WithOrigins("http://example.com",
-                                    "http://www.contoso.com");
+                options.AddPolicy(MyAllowLocalhostSpecificOrigins,
+                    builder =>
+                    {
+                        builder
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
             });
-        });
 
 // ....
 
 app.UseCors(MyAllowSpecificOrigins);        
 ```
 
-
 ## Getting high scores from the API
 
-In this chapter you will get high scores from the API you created in the .NET Core labs. 
+In this chapter you will get high scores from the OpenAPI client you created in previous chapter.
 
-### 1. Create a service class which will contain your request(s)
+### 1. Replace code of the high-scores component
 
-Create the service by using the Angular CLI.
+Replace the contents of `./angular-application/src/app/high-scores/high-scores.component.ts`
 
-```sh
-ng generate service shared/services/high-scores
+```ts
+export class HighScoresComponent implements OnInit {
+  public highScores: HighScore[] = [];
 
-# Short-hand command:
-# ng g s shared/services/high-scores
-```
+  /* Inject the automatically generated LeaderboardService */
+  constructor(private readonly leaderBoardsService: LeaderboardService) {}
+  /* #end# */
 
-The above command generated the following file: `./angular-application/src/app/shared/services/high-score.service.ts`
+  /* Subscribe to the Get Observable and add the result to the high scores array */
+  ngOnInit() {
+    this.getHighScores()
+      .subscribe(result => {
+        this.highScores = result;
+      });
+  }
+  /* #end */
 
-The script appended `.service.ts` to identify it as a service class.
+  /*  */
+  private getHighScores(): Observable<Array<HighScore>> {
+    return this.leaderBoardsService
+      .leaderboardGet({
+        version: "1.0", 
+        format: 'json'
+      });
+  }
+  /* #end */
 
-The service contains the following content: 
-
-``` ts
-@Injectable({
-  providedIn: 'root'
-})
-export class HighScoresService {
-
-  constructor() { }
+  onHighScoreSelected(highScore: HighScore) {
+    // Log the selected highscore to the developer console.
+    console.log(`high score selected`, highScore);
+  }
 }
 ```
 
-`@Injectable "root"` marks the service as Singleton. You can save state inside this Service and this state can be used throughout the application.
+`Observable` is a concept of RxJS. You first setup a request. Only after calling `.subscribe()` the request is executed.
 
-### 3. Add the service to the AppModule
+> **Pro tip**
+> 
+> RxJS is very interesting and could have its own workshop. If you want to know more about RxJS visit:
+> - https://angular.io/guide/rx-library
+> - https://www.learnrxjs.io/
 
-Add the service as provider to the `AppModule` in file `./angular-application/src/app/app.module.ts`
+## Posting scores to the API
 
+In this chapter you will post scores to the API and refresh the the high scores when a new score is posted.
 
-```ts
-@NgModule({
-  declarations: [
-    /* ... */
-  ],
-  imports: [
-    /* ... */
-  ],
-  providers: [
-    /* Add the service to providers */
-    HighScoresService
-    /* #end */
-  ],
-  bootstrap: [AppComponent]
-})
-export class AppModule { }
-```
+### 1. Post a score to the API
 
-Adding the `HighScoresService` to the providers makes it (dependency) `Injectable` for Components. You inject this service later on in this lab.
-
-### 4. Add a GET method to the service
-
-Add a get method to the service in file `./angular-application/src/app/shared/services/high-score.service.ts`
+Post form values of add score component in file: `./angular-application/src/app/add-score.component.ts`
 
 ```ts
-export class HighScoresService {
-  constructor(private readonly httpClient: HttpClient) {}
+export class AddScoreComponent implements OnInit {
+  addScoreForm: FormGroup;
 
-  /* Add this get method */
-  getHighScores(): Observable<Array<HighScore>> {
-    var uri = "https://localhost:5001/api/v1/leaderboard";
-    return this.httpClient.get<Array<HighScore>>(uri);
+  /* Add this property */
+  isScorePosted: boolean = false;
+  /* #end */
+
+  /* Add private readonly scoresService: ScoresService to constructor */
+  constructor(private fb: FormBuilder, private readonly scoresService: ScoresService) {}
+  /* #end */
+
+  ngOnInit() {
+    this.addScoreForm = this.fb.group({
+      nickname: [""],
+      game: [""],
+      points: [0]
+    });
+  }
+
+  /* Add post score using the scoresService */
+  submitScore(): void {
+    var formValues = this.addScoreForm.value;
+
+    this.scoresService.scoresPostScore({
+      game: formValues.game,
+      nickname: formValues.nickname,
+      body: formValues.points,
+      version: "1.0"
+    }).subscribe(x => {
+      this.isScorePosted = true;
+    });
   }
   /* #end */
 }
 ```
+
+`subscribe()` the request needs to be subscribed to in order to execute the post.
+
+
+```html
+<!-- Add *ngIf="!isScorePosted" to <form> -->
+<form class="add-score-form" [formGroup]="addScoreForm" *ngIf="!isScorePosted">
+<!-- #end -->
+</form>
+
+<!-- Add the following <div> below the <form> -->
+<div *ngIf="isScorePosted">
+  <h1>Thank you for adding your score!</h1>
+  <a [routerLink]="['/']">Go back to view high scores</a>
+</div>
+<!-- #end -->
+```
+
+with `*ngIf` you can hide and show content dynamically. This renders and removes components, instead of only the visibility.
+
+After posting the score you should now see a thank you message and the option to go back.
+
+
+## Wrap up
+
+In this lab you have created an http client based on the OpenAPI configuration of the .NET Core API. You made a get requests to get high scores and a post request to post new scores.
