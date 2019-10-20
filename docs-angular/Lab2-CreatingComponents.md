@@ -109,7 +109,18 @@ The script created `./angular-application/src/app/high-scores/high-scores-list/*
 
 ### 2. Create a model to hold high scores
 
-Create a the following file `./angular-application/src/shared/models/high-score.ts`
+Create a model interface to hold high scores
+
+```sh
+ng generate interface shared/models/high-score
+
+# short-hand script:
+# ng g i shared/models/high-score
+```
+
+The above script generated the following file `./angular-application/src/app/shared/models/high-score.ts`. It is in a shared folder, so it can easily be used throughout the whole application when the application grows larger.
+
+Add the following content to the file:
 
 ```ts
 interface HighScore {
@@ -118,8 +129,6 @@ interface HighScore {
   points: number;
 }
 ```
-
-The `high-score.ts` is in a shared folder, so it can easily be used throughout the whole application when the application grows larger.
 
 > **interface vs class**
 >
@@ -443,12 +452,12 @@ Also make the following changes to the html in file `./angular-application/src/a
 
 > #### Suggestion:
 >
-> Run the application and press the button. you should now see the values of the form logged to your developer console. Press F12 in Google Chrome for example to view the logs.
+> Run the application and press the button. you should now see the values of the form logged to your developer console. Press F12 in Google Chrome for example to view the logs. You should also see the form becoming invalid and valid when changing the Nickname field, because it has the required validator on it.
 
 
 > #### Pro tip:
 >
-> Go to https://angular.io/guide/reactive-forms to learn more about Angular Reactive Forms
+> Go to https://angular.io/guide/reactive-forms to learn more about Angular Reactive Forms and validating forms.
 
 
 ## Wrap up
