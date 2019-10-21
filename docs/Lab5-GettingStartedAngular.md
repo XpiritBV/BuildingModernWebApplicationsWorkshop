@@ -1,4 +1,4 @@
-# Lab 4 - Getting started with Angular
+# Lab 5 - Getting started with Angular
 
 This lab will make sure you have set up your laptop correctly to create and run an Angular application.
 
@@ -238,7 +238,7 @@ Add some styling to the app-component in file `./app/app.component.scss`
 ## Wrapup
 You have prepared your laptop and created an Angular application with Material Design which you are going to use in the next labs. Any issues you may have, can probably be resolved during the labs. Ask your fellow attendees or the proctor to help you, if you cannot solve the issues.
 
-Continue with [Lab 5 - Creating components](Lab5-CreatingComponents.md).
+Continue with [Lab 5 - Creating components](Lab6-CreatingComponents.md).
 
 ## Reference material 
 - https://angular.io/docs

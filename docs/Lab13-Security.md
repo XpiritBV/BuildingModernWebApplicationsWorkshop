@@ -235,4 +235,4 @@ kubectl apply -f .\gamingwebapp.k8s-static.yaml
 
 In this lab you have stored the secrets of your application in the Azure Key Vault. You also moved the remaining secrets, containing the details to get access to the vault, in user secrets for development scenarios. In production these secrets are stored as Kubernetes secrets.
 
-Continue with [Lab 8 - Azure DevOps Pipelines](Lab8-AzDOPipelines.md).
+Continue with [Lab 14 - Azure DevOps Pipelines](Lab8-AzDOPipelines.md).

@@ -14,6 +14,12 @@ namespace RetroGamingWebAPI.Infrastructure
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Gamer>().ToTable("Gamers");
+            modelBuilder.Entity<Score>().ToTable("Scores");
+        }
+
         public DbSet<Gamer> Gamers { get; set; }
         public DbSet<Score> Scores { get; set; }
     }

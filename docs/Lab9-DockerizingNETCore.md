@@ -1,4 +1,4 @@
-# Lab 3 - Dockerizing a .NET Core application
+# Lab 9 - Dockerizing a .NET Core application
 
 During this lab you will take an existing application and port it to use Docker containers.
 
@@ -10,7 +10,7 @@ Goals for this lab:
 - [Running SQL Server in a Docker container](#sql)
 
 ## <a name="run"></a>Run existing application
-We will start with running the existing ASP.NET Core application from Visual Studio. Make sure you have cloned the Git repository, or return to [Lab 1 - Getting Started](Lab1-GettingStarted.md) to clone it now if you do not have the sources. Switch to the `Start` branch by using this command:
+We will start with running the existing ASP.NET Core application from Visual Studio. Make sure you have cloned the Git repository, or return to [Lab 1 - Getting Started](Lab1-GettingStarted.md) to clone it now if you do not have the sources. Switch to the `StartDocker` branch by using this command:
 
 ```cmd
 git checkout start
@@ -21,14 +21,50 @@ git checkout start
 > Make sure you have switched to the `start` branch to use the right .NET solution. If you are still on the `master` branch, you will use the completed solution. 
 
 > Make sure you have configured 'Docker Desktop' to run Linux containers.
-> If your VS2017 debugger won't start and attach, reset 'Docker Desktop' to its factory defaults and recreate network shares by using the settings screen.
+> If your VS2019 debugger won't start and attach, reset 'Docker Desktop' to its factory defaults and recreate network shares by using the settings screen.
 
-Open the solution `Workshop.sln` in Visual Studio. Take your time to navigate the code and familiarize yourself with the various projects in the solution. You should be able to identify these:
+Open the solution `BuildingModernWebApplications.sln` in Visual Studio. Take your time to navigate the code and familiarize yourself with the web API project in the solution if you haven't built that yourself in the previous labs. You should be able to identify:
+- ASP.NET Core Web API `RetroGamingWebApi` 
+- Angular frontend project
 
-- `GamingWebApp`, an ASP.NET MVC Core frontend 
-- `LeaderboardWebApi`, an ASP.NET Core Web API
+## Switching to SQL Server 
 
-For now, the SQL Server for Linux container instance is providing the developer backend for data storage. This will be changed later on. Make sure you run the SQL Server as described in [Lab 2](https://github.com/XpiritBV/ContainerWorkshop2018Docs/blob/master/Lab2-Docker101.md#lab-2---docker-101).
+Up until now, the web API has used an in-memory database provider to serve as the backing store. You will switch to SQL Server for Linux container instance to provide the backend for data storage on your development machine. Later your are going to change this to a hosted Azure SQL Server instance. Before you continue, make sure you are running the SQL Server as described in [Lab 8](Lab8-Docker101.md#lab-2---docker-101).
+
+You will need to make a small adjustment to the original code and replace the in-memory provider with the SQL Server provider.
+
+In `ConfigureServices` of the `Startup` class in the Web API project, find and replace the part that registers the in-memory provider with:
+```c#
+services.AddDbContext<RetroGamingContext>(options =>
+{
+    string connectionString =
+        Configuration.GetConnectionString("RetroGamingContext");
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+        maxRetryCount: 5,
+        maxRetryDelay: TimeSpan.FromSeconds(30),
+        errorNumbersToAdd: null);
+    });
+});
+```
+Notice how it uses the same RetroGamingContext and reads a connection string from the configuration that is stored inside `appsettings.json`.
+
+Add the connection string in the application settings file `appsettings.json`:
+```json
+"ConnectionStrings": {
+    "RetroGamingContext": "Server=tcp:127.0.0.1,5433;Database=RetroGaming2019;User Id=sa;Password=Pass@word;Trusted_Connection=False;"
+  },
+```
+
+Finally, add the following method to the `RetroGamingContext` class to support the mapping to specific tables in SQL Server.
+```c#
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Gamer>().ToTable("Gamers");
+    modelBuilder.Entity<Score>().ToTable("Scores");
+}
+```
 
 > ##### Important
 > Update the connectionstring in the appsettings.json file to use the computername instead of localhost or 127.0.0.1. We will need this later. 
@@ -36,7 +72,7 @@ For now, the SQL Server for Linux container instance is providing the developer 
 ```json
 {
   "ConnectionStrings": {
-    "LeaderboardContext": "Server=tcp:machinename,5433;Database=Leaderboard;User Id=sa;Password=Pass@word;Trusted_Connection=False;"
+    "RetroGamingContext": "Server=tcp:machinename,5433;Database=Leaderboard;User Id=sa;Password=Pass@word;Trusted_Connection=False;"
   }
 ```
 
@@ -45,11 +81,7 @@ Then start the container, if you did not already do this.
 docker run -e ACCEPT_EULA=Y -e MSSQL_PID=Developer -e SA_PASSWORD="Pass@word" --name sqldocker -p 5433:1433 -d mcr.microsoft.com/mssql/server
 ```
 
-Right-click both the GamingWebApp and Leaderboard.WebAPI and start to debug a new instance.
-
-First, navigate to the web site located at http://localhost:44325/. There should be a single highscore listed. Notice what the operating system is that you are currently running on.
-
-Next, navigate to the Web API endpoint at http://localhost:44369/swagger. Experiment with the GET and POST operations that are offered from the Swagger user interface. Try to retrieve the list of high scores, and add a new high score for one of the registered player names.
+Right-click the RetroGamingWebAPI and start to debug a new instance. Navigate to the Web API endpoint at https://localhost:5001/openapi. Experiment with the GET and POST operations that are offered from the Open API user interface. Try to retrieve the list of high scores, and add a new high score for one of the registered player names.
 
 Make sure you know how this application is implemented. Set breakpoints if necessary and navigate the flow of the application for the home page.
 
