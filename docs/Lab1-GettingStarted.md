@@ -6,7 +6,7 @@ Goals for this lab:
 - [Prepare development laptop](#1)
 - [Download required and optional tooling](#2)
 - [Clone Git repository for lab code](#3)
-- [Run and inspect lab application](#4)
+- [Prefetch Docker images](#4)
 - [Create Docker cluster on Microsoft Azure](#5)
  
 ## <a name="1"></a>1. Prepare your development laptop
@@ -15,16 +15,15 @@ Make sure that your laptop is up-to-date with the latest security patches. This 
 ## <a name="2"></a>2. Download required and optional tooling
 First, you will need to have a development IDE installed. The most preferable IDE is [Visual Studio 2019](https://www.visualstudio.com/vs/) if you are running the Windows operating system.
 
-You may want to consider installing [Visual Studio Code](https://code.visualstudio.com/) in the following cases:
+You should also install [Visual Studio Code](https://code.visualstudio.com/) for the Angulard labs and as an alternative to Visual Studio 2019 the following cases:
 - Your development machine is running OSX or a Linux distribution as your operating system.
 - You want to have an light-weight IDE or use an alternative to Visual Studio 2019.
-- You want to run any of the labs including and above lab 10.
 
 > Download and install either [Visual Studio 2019](https://www.visualstudio.com/downloads/) or [Code](https://www.visualstudio.com/downloads/).
 >
 > For Visual Studio Code, also install the [Kubernetes](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) and [Docker](https://marketplace.visualstudio.com/items?itemName=PeterJausovec.vscode-docker) extensions.
 
-Second, you are going to need the Docker Community Edition tooling on your development machine. Depending on your operating system you need to choose the correct version of the tooling. Instructions for installing the tooling can be found [here](https://docs.docker.com/install/). You can choose either the stable or edge channel.
+Second, you are going to need the Docker Desktop Community Edition tooling on your development machine. Depending on your operating system you need to choose the correct version of the tooling. Instructions for installing the tooling can be found [here](https://docs.docker.com/install/). You can choose either the stable or edge channel.
 
 > Download and install Docker Community Edition:
 > - [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/install/)
@@ -56,13 +55,15 @@ git clone https://github.com/XpiritBV/BuildingModernWebApplicationsWorkshop.git
 ```
 $env:workshop = 'C:\Sources\Workshop'
 ```
+## <a name=""></a> Prefetch Docker images
+To avoid downloading large images during the workshop, you can pull the images for the labs ahead of time:
+Execute the following commands from a command-line window:
 
-## <a name="4"></a>4. Compile and inspect demo application
-Start Visual Studio and open the solution you cloned in the previous step. 
-Build the application and fix any issues that might occur. 
-Take a look at the solution and inspect the source code. In particular, pay attention to:
-- Web API and the Entity Framework code to store data
-- Web frontend with proxy code to call Web API
+```sh
+docker pull mcr.microsoft.com/mssql/server
+docker pull mcr.microsoft.com/dotnet/core/runtime:3.0-buster-slim
+docker pull mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim
+```
 
 ## <a name="5"></a>5. (Optional) Create a Kubernetes cluster in Azure
 
@@ -133,4 +134,4 @@ This does not incur any costs other than your Azure resource consumption and sho
 ## Wrapup
 You have prepared your laptop and cloud environment to be ready for the next labs. Any issues you may have, can probably be resolved during the labs. Ask your fellow attendees or the proctor to help you, if you cannot solve the issues.
 
-Continue with [Lab 2 - Docker101](Lab2-Docker101.md).
+Continue with [Lab 2 - Creating Web API](Lab2-CreatingWebAPI.md).

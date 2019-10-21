@@ -1,4 +1,4 @@
-# Lab 2 - Docker 101
+# Lab 8 - Docker 101
 
 In this lab you will become more familiar with the Docker command-line interface (CLI). 
 
@@ -174,4 +174,4 @@ You have just learned some of the basic commands in the Docker CLI to manage bot
 
 Keep the container with the SQL Server developer instance running, as we will need it in the next lab.
 
-Continue with [Lab 3 - Dockerizing .NET Core](Lab3-DockerizingNETCore.md).
+Continue with [Lab 9 - Dockerizing .NET Core](Lab9-DockerizingNETCore.md).

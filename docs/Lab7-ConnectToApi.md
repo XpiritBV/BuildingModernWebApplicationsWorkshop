@@ -1,4 +1,4 @@
-# Lab 3 - Connect to the API
+# Lab 7 - Connect to the API
 
 In this lab you will use the components you have created and connect them to the .NET Core API. You will learn about generating an OpenAPI client inside your Angular application and using it to GET and POST.
 
@@ -209,10 +209,7 @@ export class AddScoreComponent implements OnInit {
 ```
 
 with `*ngIf` you can hide and show content dynamically. This renders and removes components, instead of only the visibility.
-
 After posting the score you should now see a thank you message and the option to go back.
 
-
 ## Wrap up
-
 In this lab you have created an http client based on the OpenAPI configuration of the .NET Core API. You made a get requests to get high scores and a post request to post new scores.

@@ -1,4 +1,4 @@
-# Lab 2 - Creating Components
+# Lab 6 - Creating Components
 
 During this lab you will create components with the Angular CLI to display high scores and add new scores using the Angular Angular Reactive Components. You will learn how to navigate to these components using Angular Routing.
 
@@ -448,4 +448,4 @@ Also make the following changes to the HTML in file `./app/add-score.component.h
 ## Wrap up
 In this lab you have created components and navigated to them using the Angular Router. You used Material components to enhance your application and Angular Reactive Forms to get data from your form. In the next lab you will connect the components to the .NET Core API created in the earlier Labs.
 
-Continue with [Lab 6 - Connect to web API](Lab6-ConnectToAPI.md).
+Continue with [Lab 7 - Connect to web API](Lab7-ConnectToAPI.md).
