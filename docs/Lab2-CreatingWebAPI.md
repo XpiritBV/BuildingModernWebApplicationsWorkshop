@@ -35,11 +35,11 @@ If you are using Visual Studio Code you can add this to the `.gitignore` file:
 *.code-workspace
 ``` 
 
-To get started building the Web API, you are going to use the templating engine of the .NET Core SDK to scaffold a new solution file for Visual Studio 2019:
+To get started building the Web API, you are going to use the templating engine of the ASP.NET Core SDK to scaffold a new solution file for Visual Studio 2019:
 ```sh
 dotnet new sln -n BuildingModernWebApplications
 ```
-Also create a new empty Web .NET Core project, that will become the Web API. Add the project to the solution:
+Also create a new empty Web ASP.NET Core project, that will become the Web API. Add the project to the solution:
 ```sh
 dotnet new web -n RetroGamingWebAPI
 dotnet sln add './RetroGamingWebAPI/RetroGamingWebAPI.csproj'
@@ -101,7 +101,6 @@ namespace RetroGamingWebAPI.Controllers
 }
 ```
 
-
 The next step is to add API controllers as services into the dependency injection system. Find the `ConfigureServices` method inside `Startup.cs`  and add the following:
 
 ```C#
@@ -110,18 +109,22 @@ public void ConfigureServices(IServiceCollection services)
    services.AddControllers();
 }
 ```
-The `Configure` method builds the request handling pipeline consisting of middleware. For now you will only change the endpoints of the application. Remove the existing endpoint for `"/"` and map the controllers instead:
-```C#
-app.UseEndpoints(endpoints =>
+The `Configure` method builds the request handling pipeline consisting of middleware. Remove the existing endpoint for `"/"` and map the API controllers instead:
+
+```c#
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
+   /* ... */
+   app.UseEndpoints(endpoints =>
+   {
       endpoints.MapControllers();
-});
+   });
+}
 ```
 
+Notice how ASP.NET Core has no special `ApiController` class anymore and instead uses the `[ApiController]` attribute to indicate the class as an API Controller. 
 
-Notice how ASP.NET Core has no special `ApiController` class anymore and instead uses the `[ApiController]` attribute to indicate the class as an API. 
-
-Next, add a single API method for the HTTP `GET` action:
+Next, add a single API method to the `LeaderboardController.cs` for the HTTP `GET` action:
 ```c#
 [HttpGet]
 public ActionResult<IEnumerable<int>> Get()
@@ -130,18 +133,28 @@ public ActionResult<IEnumerable<int>> Get()
 }
 ```
 
-These preparations are enough to add an endpoint to the routing middleware, and have a receiving controller handle the GET request for the REST API.
-Give it another try. Start the project in Visual Studio 2019 by switching the host form IIS Express to RetroGamingWebAPI and pressing F5. Or run it from the command-line in the RetroGamingWebAPI folder with:
+Fix the imports in order to build the application again. Visual Studio 2019 can help you with this.
+
+Adding a Http Get method is enough to add an endpoint to the routing middleware, and have a receiving controller handle the GET request for the REST API.
+
+Run the Web API in Visual Studio 2019 by switching the host from IIS Express to RetroGamingWebAPI and pressing F5. Or run it from the command-line in the RetroGamingWebAPI folder with:
 ```sh
 C:\Sources\Workshop> dotnet run
 ```
-In Visual Studio Code you will also press F5 and configure the launch setting to select the .NET Core debug environment.
+
+You can also run it in Visual Studio Code by pressing F5. You will be prompted to configure the launch setting to select the .NET Core debug environment.
 
 Navigate to https://localhost:5001/api/leaderboard using a browser. When hosting in Visual Studio 2019 using IIS Express, the port number will most likely be in the 44000+ range. You should see a JSON array of the hard-coded values displayed in the browser.
 
-
 ## <a name="httpmethods"></a>Adding additional HTTP methods
+
 The Retro Gaming leaderboard Web API must return a list of high scores when making a GET request at `/api/leaderboard`. In order to accomplish this, add a model for the high scores Data Transfer Objects (DTOs). Create a folder called `Models` and add a new class `HighScore`.
+
+> The folder structure should look like this:
+> - RetroGamingWebAPI
+>   - Models
+>     - HighScore.cs
+
 ```c#
 public class HighScore
 {
@@ -149,20 +162,24 @@ public class HighScore
    public string Nickname { get; set; }
    public int Points { get; set; }
 }
-```  
-Later on the high scores are retrieved from a database. For now, you will use some hardcoded fake high scores.
-In the `LeaderboardController` class, add a field for this list of fake scores and initialize the list in the constructor. Feel free to add your own imaginary scores to the list:
+```
+Later on the high scores are retrieved from a database. For now, you will use some hardcoded fake high scores. In the `LeaderboardController.cs` class, add a field for this list of high scores and initialize the list in the constructor. Feel free to add your own imaginary scores to the list:
 ```C#
-private readonly List<HighScore> scores;
-public LeaderboardController()
+public class LeaderboardController : ControllerBase
 {
-   scores = new List<HighScore>()
+   private readonly List<HighScore> scores;
+   public LeaderboardController()
    {
-         new HighScore() { Game = "Pac-man", Nickname = "LX360", Points = 1337 },
-   };
+      scores = new List<HighScore>()
+      {
+            new HighScore() { Game = "Pac-man", Nickname = "LX360", Points = 1337 },
+      };
+   }
+
+   /* ... */
 }
 ```
-Also change the signature of the GET action of the controller to match the new data returned.
+Also change the signature of the GET action of the `LeaderboardController.cs` to match the new data returned.
 ```C#
 [HttpGet]
 public ActionResult<IEnumerable<HighScore>> Get()
@@ -170,9 +187,9 @@ public ActionResult<IEnumerable<HighScore>> Get()
    return Ok(scores);
 }
 ```
-Try the new method by navigating to the leaderboard endpoint and verify that the data is returned in JSON format. 
+Try the new method by navigating to the leaderboard endpoint https://localhost:5001/api/leaderboard and verify that the data is returned in JSON format. 
 
 ## Wrapup
-You have just enhanced your initially empty web API with some basic functionality and tested it. The next steps will be to add some real world functionality, including Entity Framework Core Object relational mapping, XML support, content negotiation, OpenAPI documentation, versioning and CORS security. 
+You have just enhanced your initially empty web API with some basic functionality and tested it. The next steps will be to add some real world functionality, including Entity Framework Core Object relational mapping, XML support, content negotiation, OpenAPI documentation, versioning and CORS security.
 
 Continue with [Lab 3 - Entity Framework](Lab3-EntityFrameworkCore.md).
