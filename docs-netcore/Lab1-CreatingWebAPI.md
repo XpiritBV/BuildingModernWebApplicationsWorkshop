@@ -9,7 +9,7 @@ Goals for this lab:
 
 ## <a name="create"></a>Create a solution and empty Web API project
 Make sure you have the .NET Core 3.0 SDK installed. You can check this by running the command 
-```cmd 
+```sh 
 dotnet --list-sdks
 ```
 from the command-line. You should see the versions of all installed .NET Core SDKs similar to this:
@@ -21,12 +21,11 @@ C:\>dotnet --list-sdks
 If the 3.0 version of the SDK is not installed, go back to the prerequisites in lab 0 and download and install it.
 
 Next, create a new folder for your entire solution. This can be any folder, e.g. `C:\Sources\Workshop` on a Windows system. Initialize a new Git repository and add a .gitignore file by running:
-```cmd
+```sh
 git init
 dotnet new gitignore
 ``` 
-from the command-line inside the new folder.
-For Visual Studio Code you can add this to the `.gitignore` file:
+If you are using Visual Studio Code you can add this to the `.gitignore` file:
 ```git
 .vscode/*
 !.vscode/settings.json
@@ -36,29 +35,36 @@ For Visual Studio Code you can add this to the `.gitignore` file:
 *.code-workspace
 ``` 
 
-To get started building our Web API, you are going to use the templating engine of the .NET Core SDK to scaffold a new solution file:
-```cmd
+To get started building the Web API, you are going to use the templating engine of the .NET Core SDK to scaffold a new solution file for Visual Studio 2019:
+```sh
 dotnet new sln -n BuildingModernWebApplications
 ```
-Also create a new empty ASP.NET Core project, that will become the Web API. Add the project to the solution:
-```cmd
+Also create a new empty Web .NET Core project, that will become the Web API. Add the project to the solution:
+```sh
 dotnet new web -n RetroGamingWebAPI
-dotnet sln add RetroGamingWebAPI\RetroGamingWebAPI.csproj
+dotnet sln add './RetroGamingWebAPI/RetroGamingWebAPI.csproj'
 ``` 
-This should be enough to create a solution for Visual Studio 2019 and a project that can run your Web API.
+This should be enough to create a solution file for Visual Studio 2019 and a project that can run your Web API.
 Give it a try by building the solution and starting the project.
-```cmd
+```sh
 dotnet build
 cd RetroGamingWebAPI
 dotnet run  
 ```
-The ASP.NET Core application should start and you can view the "Hello World" page at https://localhost:5001.
-Stop the running application by pressing Ctrl+C.
+The .NET Core (web) application should start and you can view the "Hello World" page at https://localhost:5001.
+
+Stop the application by pressing Ctrl+C.
 
 ## <a name="webapi"></a>Building a minimal Web API
-Open your new solution `BuildingModernWebApplications.sln` in Visual Studio 2019 or Code and examine the files that are in the project. Pay extra attention to the `Program.cs` file and the .NET Core 3.0 application bootstrapping using the new `Host` class.
 
-In the `Startup.cs` file add a constructor that has an `IConfiguration` and `IHostEnvironment` parameter and store these in read-only properties. The configuration and host environment are created by the `Host.CreateDefaultBuilder` factory method in the Program static `Main` entry point.
+Open your new solution `BuildingModernWebApplications.sln` in Visual Studio 2019 or Code and examine the files that are in the project. 
+
+Pay extra attention to the `Program.cs` file which contais the .NET Core 3.0 application bootstrapping using the new `Host` class.
+
+In the `Startup.cs` file add a constructor that has an `IConfiguration` and `IHostEnvironment` parameter and store these in read-only properties. First import the configuration library.
+```c#
+using Microsoft.Extensions.Configuration;
+```
 
 ```c#
 public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
@@ -71,22 +77,16 @@ public IConfiguration Configuration { get; }
 public IHostEnvironment HostEnvironment { get; }
 ```
 
-The next step is to add the controllers as services into the dependency injection system. Find the `ConfigureServices` method and add the controllers to the services registered on the `IServiceCollection`:
+The configuration and host environment are created inside the `Program.cs` static `Main` entry point using the `Host.CreateDefaultBuilder` factory method. 
 
-```C#
-public void ConfigureServices(IServiceCollection services)
-{
-   services.AddControllers();
-}
-```
-The `Configure` method builds the request handling pipeline consisting of middleware. For now you will only change the endpoints of the application. Remove the existing endpoint for `"/"` and map the controllers instead:
-```C#
-app.UseEndpoints(endpoints =>
-{
-      endpoints.MapControllers();
-});
-```
-The final step is to add the first Web API controller. Create a new `Controllers` folder in the project and add a new API controller named `LeaderboardController`. You can do this by right-clicking the folder in Visual Studio 2019 and choose to add a new `Controller` item and select the` API Controller Empty`. Alternatively you can add a text file and include following code:
+The first step is to add the first Web API controller. Create a new `Controllers` folder inside the `RetroGamingWebAPI` the project and add a new API controller class named `LeaderboardController`. 
+
+You can do this by right-clicking the folder in Visual Studio 2019 and choose to add a new `Controller` item and select the` API Controller Empty`. Alternatively you can add an empty `.cs` file and include following code:
+
+> The folder structure should look like this:
+> - RetroGamingWebAPI
+>   - Controllers
+>     - LeaderboardController.cs
 
 ```c#
 using Microsoft.AspNetCore.Mvc;
@@ -101,6 +101,24 @@ namespace RetroGamingWebAPI.Controllers
 }
 ```
 
+
+The next step is to add API controllers as services into the dependency injection system. Find the `ConfigureServices` method inside `Startup.cs`  and add the following:
+
+```C#
+public void ConfigureServices(IServiceCollection services)
+{
+   services.AddControllers();
+}
+```
+The `Configure` method builds the request handling pipeline consisting of middleware. For now you will only change the endpoints of the application. Remove the existing endpoint for `"/"` and map the controllers instead:
+```C#
+app.UseEndpoints(endpoints =>
+{
+      endpoints.MapControllers();
+});
+```
+
+
 Notice how ASP.NET Core has no special `ApiController` class anymore and instead uses the `[ApiController]` attribute to indicate the class as an API. 
 
 Next, add a single API method for the HTTP `GET` action:
@@ -114,7 +132,7 @@ public ActionResult<IEnumerable<int>> Get()
 
 These preparations are enough to add an endpoint to the routing middleware, and have a receiving controller handle the GET request for the REST API.
 Give it another try. Start the project in Visual Studio 2019 by switching the host form IIS Express to RetroGamingWebAPI and pressing F5. Or run it from the command-line in the RetroGamingWebAPI folder with:
-```cmd
+```sh
 C:\Sources\Workshop> dotnet run
 ```
 In Visual Studio Code you will also press F5 and configure the launch setting to select the .NET Core debug environment.
