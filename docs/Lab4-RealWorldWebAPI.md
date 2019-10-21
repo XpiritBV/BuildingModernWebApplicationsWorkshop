@@ -1,4 +1,4 @@
-# Lab 3 - Real world web APIs
+# Lab 4 - Real world web APIs
 
 In this lab you will make your web API more realistic and introduce several pieces of functionality and characteristics typical for a REST API. This includes the ability to do content negotiation, XML support and having an OpenAPI document to describe the service and a Cross-Origin Resource Sharing security policies.
 
@@ -180,24 +180,28 @@ Each of the two controllers need to have their route format changed and require 
 Make sure to replace the existing `[Route]` attribute.
 Also, change the startup URL for the web API to be `/api/v1/leaderboard` to reflect the change to route containing a version for the API.
 
-Now that we have a versioned API we can add a newer version. You can add a completely new controller with a `[ApiVersion("2.0")]` attribute on top. Alternatively, you can add a new action method in an existing controller and map it to a specific API version with the `[MapToVersion]` attribute on the method. 
+Run your web API and navigate to the new endpoints to check whether they work correctly.
+
+Now that we have a versioned API we can add a newer version. You can add a completely new controller with a `[ApiVersion("2.0")]` attribute on top. Alternatively, you can add a new action method in an existing controller and map it to a specific API version with the `[MapToVersion]` attribute on the method.
 Add a new method to the `ScoresController` like so:
 ```c#
+[MapToApiVersion("2.0")]
 [HttpGet("{game}")]
 public async Task<IEnumerable<Score>> Get(string game)
 {
    var scores = context.Scores.Where(s => s.Game == game).Include(s => s.Gamer);
    return await scores.ToListAsync().ConfigureAwait(false);
 }
-
 ```
+Also, put another `[ApiVersion("2.0")]` on the controller.
+
 Try the new controller by running your API and navigating to the `api/v1/scores/Pacman` endpoint. You should get an error like this:
 ```json
 {"error":{"code":"UnsupportedApiVersion","message":"The HTTP resource that matches the request URI 'https://localhost:5001/api/v1/scores/Pacman' does not support the API version '1'.","innerError":null}}
 ```
 This is intended behavior, as the `[MapToApiVersion]` attribute excludes the GET action from the 1.0 version of the API.
 
-Next, try `api/v2/scores/Pacman`. You should get an error, even if all your code is completely correct.
+Next, try `api/v2/scores/Pacman`. You should get an error, even though your versioning code is completely correct.
 
 The reason is that our object model contains a circular reference. The serialization will fail because of this. You can fix this by introducing the Newtonsoft.Json serializer and configuring it to ignore reference loops. 
 Add a NuGet packages for `Microsoft.AspNetCore.Mvc.NewtonsoftJson` and change the configuration of the controllers in `ConfigureServices`.
@@ -210,6 +214,47 @@ options.FormatterMappings.SetMediaTypeMappingForFormat("json", new MediaTypeHead
 ```
 Try running the API again and see if it works correctly now.
 
+Should you try to use the OpenAPI documents and Swagger UI you will find that it is broken currently. You need some fixes to take the two versions into account. 
+First, add a second OpenAPI document definition in `ConfigureServices`, with an operation processor to filter out the correct controllers and methods based on their version. Replace the existing call to `AddOpenApiDocument`.
+```c#
+services.AddOpenApiDocument(document =>
+{
+      document.OperationProcessors.Add(new ApiVersionProcessor() { IncludedVersions = new string[] { "1.0" } });
+      document.DocumentName = "v1";
+      document.PostProcess = d => d.Info.Title = "Retro Gaming Web API v1.0 OpenAPI";
+});
+services.AddOpenApiDocument(document =>
+{
+      document.OperationProcessors.Add(new ApiVersionProcessor() { IncludedVersions = new string[] { "2.0" } });
+      document.DocumentName = "v2";
+      document.PostProcess = d => d.Info.Title = "Retro Gaming Web API v2.0 OpenAPI";
+});
+```
+
+Then, make the follwoing changes in `Configure`:
+```c#
+app.UseOpenApi(config =>
+{
+      config.DocumentName = "v1";
+      config.Path = "/openapi/v1.json";
+});
+app.UseOpenApi(config =>
+{
+      config.DocumentName = "v2";
+      config.Path = "/openapi/v2.json";
+});
+``` 
+and also 
+```c#
+app.UseSwaggerUi3(config =>
+{
+   config.SwaggerRoutes.Add(new SwaggerUi3Route("v1", "/openapi/v1.json"));
+   config.SwaggerRoutes.Add(new SwaggerUi3Route("v2", "/openapi/v2.json"));
+   
+   config.Path = "/openapi";
+   config.DocumentPath = "/openapi/v2.json";
+});
+```
 ## <a name="cors"></a>CORS Security
 There are many aspects of security to be taken care of, but we will address one of these at this point. Our future frontend must be able to call the backend web API we are building now. The browser will not allow HTTP requests from a frontend to a URL that is originating from a different hostname. This is because of Cross-Origin Resource Sharing (CORS) policies. Our web API should indicate that it is allowing incoming web requests from certain origins. For development purposes we will allow all traffic , regardless of its origin, verb or header.
 
@@ -233,4 +278,4 @@ You have just enhanced your initially empty web API to include actual real world
 
 In the next labs you will build an Angular frontend first and connect it to our web API.  
 
-Continue with [Lab 4 - Y](Lab4-Y.md).
+Continue with [Lab 5 - Getting started with Angular](Lab5-GettingStartedAngular.md).

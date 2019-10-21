@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace RetroGamingWebAPI.Controllers
 {
     [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [OpenApiTag("Leaderboard", Description = "API to retrieve high score leaderboard")]
@@ -69,6 +70,5 @@ namespace RetroGamingWebAPI.Controllers
 
             return Ok(await scores.ToListAsync().ConfigureAwait(false));
         }
-
     }
 }

@@ -1,4 +1,4 @@
-# Lab 2 - Entity Framework Core and Dependency Injection
+# Lab 3 - Entity Framework Core and Dependency Injection
 
 In this lab you will add more functionality to your web API so it can actually be used. You will use Entity Framnework Core with an in-memory database provider and create a domain model to be serialized using EF Core. In the end you will explicitly register a dependency on a fictitious mail service and inject it using the dependency injection system of .NET Core.
 
@@ -198,4 +198,4 @@ You have just enhanced your initially empty web API to include actual functional
 
 In the next labs you will add REST related capabilities such as XML support, content negotiation, OpenAPI documentation, versioning and CORS security policies.
 
-Continue with [Lab 3 - Real world web APIs](Lab3-RealWorldWebAPI.md).
+Continue with [Lab 4 - Real world web APIs](Lab4-RealWorldWebAPI.md).
