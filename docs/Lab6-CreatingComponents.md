@@ -132,8 +132,6 @@ export interface HighScore {
 
 The next step is to have the high scores list component receive input to be displayed. 
 
-TODO: verify location
-
 Replace the following TypeScript snippet in `./src/app/high-scores/high-scores-list/high-scores-list.component.ts`:
 ```ts
 @Component({

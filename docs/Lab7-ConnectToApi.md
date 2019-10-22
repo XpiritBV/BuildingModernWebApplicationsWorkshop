@@ -19,7 +19,7 @@ npm install -g ng-openapi-gen
 ### 2. Generate a client inside your Angular application
 The next step is to use the OpenAPI generator to create a client based on our OpenAPI definition. Make sure you are running your Web API. Run the following command from the terminal window:
 ```sh
-#//TODO correct localhost port
+# Verify localhost port is correct
 ng-openapi-gen --input http://localhost:5000/openapi/v1.json --output src/app/shared/api/leaderboards-api
 ```
 You are using the HTTP endpoint, because the self-signed certificate for the HTTPS endpoint will give errors. The OpenAPI document will stay the same regardless of the protocol you use.

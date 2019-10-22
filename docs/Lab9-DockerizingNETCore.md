@@ -10,17 +10,17 @@ Goals for this lab:
 - [Running SQL Server in a Docker container](#sql)
 
 ## <a name="run"></a>Run existing application
-We will start with running the existing ASP.NET Core application from Visual Studio. Make sure you have cloned the Git repository, or return to [Lab 1 - Getting Started](Lab1-GettingStarted.md) to clone it now if you do not have the sources. Switch to the `StartDocker` branch by using this command:
+We will start with running the existing ASP.NET Core Web API  from Visual Studio. Make sure you have cloned the Git repository, or return to [Lab 1 - Getting Started](Lab1-GettingStarted.md) to clone it now if you do not have the sources. Switch to the `StartDocker` branch by using this command:
 
 ```cmd
-git checkout start
+git checkout StartDocker
 ```
 
 > ##### Important
-
+>
 > Make sure you have switched to the `start` branch to use the right .NET solution. If you are still on the `master` branch, you will use the completed solution. 
-
-> Make sure you have configured 'Docker Desktop' to run Linux containers.
+>
+> Also verify you have configured 'Docker Desktop' to run Linux containers.
 > If your VS2019 debugger won't start and attach, reset 'Docker Desktop' to its factory defaults and recreate network shares by using the settings screen.
 
 Open the solution `BuildingModernWebApplications.sln` in Visual Studio 2019. Take your time to navigate the code and familiarize yourself with the web API project and Angular SPA in the solution if you haven't built that yourself in the previous labs. You should be able to identify:
@@ -28,7 +28,6 @@ Open the solution `BuildingModernWebApplications.sln` in Visual Studio 2019. Tak
 - Angular frontend website project `RetroGamingSPA`
 
 ## Switching to SQL Server 
-
 Up until now, the web API has used an in-memory database provider to serve as the backing store. You will switch to SQL Server for Linux container instance to provide the backend for data storage on your development machine. Later your are going to change this to a hosted Azure SQL Server instance. Before you continue, make sure you are running the SQL Server as described in [Lab 8](Lab8-Docker101.md#lab-2---docker-101).
 
 You will need to make a small adjustment to the original code and replace the in-memory provider with the SQL Server provider.
@@ -66,17 +65,7 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 }
 ```
 
-> ##### Important
-> Update the connectionstring in the appsettings.json file to use the computername instead of localhost or 127.0.0.1. We will need this later. 
-
-```json
-{
-  "ConnectionStrings": {
-    "RetroGamingContext": "Server=tcp:machinename,5433;Database=Leaderboard;User Id=sa;Password=Pass@word;Trusted_Connection=False;"
-  }
-```
-
-Then start the container, if you did not already do this.
+Start a container instance for SQL Server for Linux, if you did not already do this in the previous lab.
 ```
 docker run -e ACCEPT_EULA=Y -e MSSQL_PID=Developer -e SA_PASSWORD="Pass@word" --name sqldocker -p 5433:1433 -d mcr.microsoft.com/mssql/server
 ```
@@ -124,14 +113,13 @@ ENTRYPOINT ["dotnet", "RetroGamingWebAPI.dll"]
 
 This file creates a clean base image, that is based on the runtime only. The next stage uses an image with the SDK to build the application. It publishes the build and in the final stage it uses the `COPY --from` syntax to only use the putput of the previous stage in your clean base image. [Read more about multi-stage builds here](https://docs.docker.com/develop/develop-images/multistage-build/)
 
-Most noticeably you will see that there is also a new Docker Compose project with the name `docker-compose` has been added. It is now your start project for the solution. *(If it's not, make sure to configure it as the startup project.)*
+Most noticeably you will see that a new Docker Compose project with the name `docker-compose` has been added. It is now your start project for the solution. *(If it's not, configure it as the startup project.)*
 
 Compositions are essential to manage the many different combinations of containers, images, run-time details and environmental settings. Typically an application consists of multiple running containers. Managing each of these individually is both difficult and labor intensive. Moreover, it does not define the relationships and dependencies that exist.
 
 Docker Compose is the tool of choice for this lab to manage compositions of containers in your development environment. It allows you to use a command-line interface, similar to the Docker CLI, to interact with compositions defined in a `docker-compose.yml` file. There are other tools that allow the creation of compositions, such as the YAML files for Kubernetes. You will use Docker Compose in this lab.
 
 ## <a name="work"></a>Working with compositions and Docker Compose
-
 To become familiar with Docker Compose and using `docker-compose.exe`, you will first start a container based on a YAML file to compile your code and build container images. Create a file named `docker-compose.ci.build.yml` in the root of your solution and add the following content to it:
 ```yaml
 version: '3.6'
@@ -153,22 +141,10 @@ Start this composition by executing the command from the root of the Visual Stud
 docker-compose -f docker-compose.ci.build.yml up
 ```
 
-The command will 'up' (meaning 'start') the composition and perform a build and publish of the project in the solution `BuildingModernWebApplications`.
-
-You could use this composition in your build pipeline to perform the build and publishing of the binaries required to create the container images of the solution.
+The command will 'up' (meaning 'start') the composition and perform a build and publish of the project in the solution `BuildingModernWebApplications`. You can use this in your build pipeline to perform the build and publishing of the binaries required to create the container images of the solution without the need for Visual Studio 2019 or Code.
 
 ## Docker Compose in Visual Studio 2019
 The tooling support of Visual Studio 2019 for Docker and Docker Compose takes care of compiling the sources and building images for you. You do not need a build file like you have just used.
-
-You can still use `docker-compose.exe` to start the composition by hand:
-```cmd
-docker-compose -f docker-compose.yml -f docker-compose.override.yml up
-```
-or simply 
-```cmd
-docker-compose up
-```
-as the tooling assumes that your files are named `docker-compose.yml` and `docker-compose.override.yml` respe
 
 Inspect the contents of the `docker-compose.yml` and `docker-compose.override.yml` files if you haven't already. The compose file specifies which services (containers), volumes (data) and networks (connectivity) need to be created and run. The `override` file is used for local hosting and debugging purposes. Ensure that you understand the meaning of the various entries in the YAML files.
 
@@ -180,7 +156,17 @@ ports:
 ```
 This implies that the URLs for your Web API will not be 5000 and 5001 anymore, but the ones listed in the override file instead.
 
-Run your solution and navigate to the `api/v1/leaderboard` endpoint. 
+You can still use `docker-compose.exe` to start the composition by hand:
+```cmd
+docker-compose -f docker-compose.yml -f docker-compose.override.yml up
+```
+or simply 
+```cmd
+docker-compose up
+```
+as the tooling assumes that your files are named `docker-compose.yml` and `docker-compose.override.yml` respectively.
+
+Run your solution using the commands and navigate to the `api/v1/leaderboard` endpoint. If that works, run the docker-compose project in Visual Studio 2019.
 
 > If you encounter the error 'The DOCKER_REGISTRY variable is not set. Defaulting to a blank string.', make sure you started Visual Studio as an administrator
 
@@ -196,7 +182,6 @@ Now that the Web API project is running from a Docker container, it is not worki
 > - Verify application settings for the web API project. 
 
 ## <a name="sql"></a>Running SQL Server in a Docker container
-
 Now that your application is running the Web API project in a Docker container, you can also run SQL Server in the same composition. This is convenient for isolated development and testing purposes. It eliminates the need to install SQL Server locally and to start the container for SQL Server manually.
 
 Go ahead and add the definition for a container service in the `docker-compose.override.yml` file.
@@ -279,7 +264,7 @@ root@65e40486ab0f:/app#
 Your container image does not contain any of the binaries that make your ASP.NET Core Web API run. Visual Studio 2019 uses volume mapping to map the files on your file system into the running container, so it can detect any changes thereby allowing small edits during debug sessions.
 
 > ##### Debug images from Visual Studio 2019
-> Remember that Visual Studio 2019 creates Debug images that do not work when run from the Docker CLI.
+> Remember that Visual Studio 2019 creates Debug images that do not work when run from the Docker CLI. Only Release buils have images that are complete and can be run without Visual Studio 2019.
 
 > ##### Asking for help
 > Remember that you can ask your proctor for help. Also, working with fellow attendees is highly recommended, as it can be fun and might be faster. Of course, you are free to offer help when asked.
