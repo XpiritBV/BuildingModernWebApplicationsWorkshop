@@ -11,58 +11,60 @@ Goals for this lab:
 - [Running SQL Server in a Docker container](#sql)
 
 ## <a name="run"></a>Run existing application
-We will start with running the existing ASP.NET Core Web API  from Visual Studio. Make sure you have cloned the Git repository, or return to [Lab 1 - Getting Started](Lab1-GettingStarted.md) to clone it now if you do not have the sources. Switch to the `StartDocker` branch by using this command:
+You will first start with running the existing ASP.NET Core Web API  from Visual Studio. Make sure you have cloned the Git repository, or return to [Lab 1 - Getting Started](Lab1-GettingStarted.md) to clone it now if you do not have the sources. Switch to the `StartDocker` branch by using this command:
+
+//TODO create the startDocker branch
 
 ```cmd
-git checkout StartDocker
+git checkout startDocker
 ```
 
 > ##### Important
 >
-> Make sure you have switched to the `start` branch to use the right .NET solution. If you are still on the `master` branch, you will use the completed solution. 
+> Make sure you have switched to the `startDocker` branch to use the right .NET solution. If you are still on the `master` branch, you will use the completed solution. 
 >
 > Also verify you have configured 'Docker Desktop' to run Linux containers.
+>
 > If your VS2019 debugger won't start and attach, reset 'Docker Desktop' to its factory defaults and recreate network shares by using the settings screen.
 
-Open the solution `BuildingModernWebApplications.sln` in Visual Studio 2019. Take your time to navigate the code and familiarize yourself with the web API project and Angular SPA in the solution if you haven't built that yourself in the previous labs. You should be able to identify:
-- ASP.NET Core Web API `RetroGamingWebAPI` 
-- Angular frontend website project `RetroGamingSPA`
+Open the solution `BuildingModernWebApplications.sln` in Visual Studio 2019. Take your time to navigate the code and familiarize yourself with the Web API project and Angular SPA in the solution if you haven't built that yourself in the previous labs. You should be able to identify:
+- `RetroGamingWebAPI` - ASP.NET Core Web API 
+- `RetroGamingSPA` - Angular SPA frontend 
 
 ## Switching to SQL Server 
-Up until now, the web API has used an in-memory database provider to serve as the backing store. You will switch to SQL Server for Linux container instance to provide the backend for data storage on your development machine. Later your are going to change this to a hosted Azure SQL Server instance. Before you continue, make sure you are running the SQL Server as described in [Lab 8](Lab8-Docker101.md#lab-2---docker-101).
+Up until now, the web API has used an in-memory database provider to serve as the backing store. You will switch to SQL Server for Linux container instance to provide the backend for data storage on your development machine. Later you will be able to change this to a hosted Azure SQL Server instance. 
 
-You will need to make a small adjustment to the original code and replace the in-memory provider with the SQL Server provider.
+Let's start by replacing the in-memory provider with the SQL Server provider in the `RetroGamingWebAPI` project. Replace `AddDbContext` in `ConfigureServices` of the `Startup.cs` class with the following:
 
-In `ConfigureServices` of the `Startup` class in the Web API project, find and replace the part that registers the in-memory provider with:
 ```c#
-services.AddDbContext<RetroGamingContext>(options =>
+public void ConfigureServices(IServiceCollection services)
 {
-    string connectionString =
-        Configuration.GetConnectionString("RetroGamingContext");
-    options.UseSqlServer(connectionString, sqlOptions =>
-    {
-        sqlOptions.EnableRetryOnFailure(
-        maxRetryCount: 5,
-        maxRetryDelay: TimeSpan.FromSeconds(30),
-        errorNumbersToAdd: null);
-    });
-});
-```
-Notice how it uses the same RetroGamingContext and reads a connection string from the configuration that is stored inside `appsettings.json`.
+  // Replace existing services.AddDbContext with the following:
+  services.AddDbContext<RetroGamingContext>(options =>
+  {
+      string connectionString =
+            Configuration.GetConnectionString("RetroGamingContext");
+      options.UseSqlServer(connectionString, sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+        });
+  }); 
 
-Add the connection string in the application settings file `appsettings.json`:
+  /* ... */
+}
+```
+Notice how it uses the same `RetroGamingContext`, but it now reads a connection string from the application settings file `appsettings.json`.
+
+Add a connection string in the application settings file :`appsettings.json`:
 ```json
-"ConnectionStrings": {
+{
+  "ConnectionStrings": {
     "RetroGamingContext": "Server=tcp:127.0.0.1,5433;Database=RetroGaming2019;User Id=sa;Password=Pass@word;Trusted_Connection=False;"
   },
-```
-
-Finally, add the following method to the `RetroGamingContext` class to support the mapping to specific tables in SQL Server.
-```c#
-protected override void OnModelCreating(ModelBuilder modelBuilder)
-{
-    modelBuilder.Entity<Gamer>().ToTable("Gamers");
-    modelBuilder.Entity<Score>().ToTable("Scores");
+  /* ... */
 }
 ```
 
@@ -71,14 +73,16 @@ Start a container instance for SQL Server for Linux, if you did not already do t
 docker run -e ACCEPT_EULA=Y -e MSSQL_PID=Developer -e SA_PASSWORD="Pass@word" --name sqldocker -p 5433:1433 -d mcr.microsoft.com/mssql/server
 ```
 
-Right-click the RetroGamingWebAPI and start to debug a new instance. Navigate to the Web API endpoint at https://localhost:5001/openapi. Experiment with the GET and POST operations that are offered from the Open API user interface. Try to retrieve the list of high scores, and add a new high score for one of the registered player names.
+Right-click the `RetroGamingWebAPI` in Visual Studio and start debugging it. 
 
-Make sure you know how this application is implemented. Set breakpoints if necessary and navigate the flow of the application for the home page.
+Navigate to the Web API endpoint at https://localhost:5001/openapi. Experiment with the GET and POST operations that are offered from the Open API user interface. Try to retrieve the list of high scores, and add a new high score for one of the registered player names.
+
+Make sure you know how this Web API is implemented. Set breakpoints if necessary and navigate the flow of the application for the home page.
 
 ## <a name="add"></a>Add Docker support
 Visual Studio 2019 offers tooling for adding support to run your application in a Docker container. You will first add container support to the Web API project.
 
-To get started you can right-click the RetroGamingWebApi project and select Add, Container Orchestrator Support from the context menu. Choose `Docker Compose` as the local orchestrator from the dropdown.
+To get started you can right-click the `RetroGamingWebApi` project and select `Add Container Orchestrator Support` from the context menu. Choose `Docker Compose` as the local orchestrator from the dropdown.
 
 <img src="images/AddContainerOrchestratorSupport.PNG" width="400" />
 
@@ -88,7 +92,8 @@ In the next dialog, choose `Linux` as the target operating system.
 
 Observe the changes that Visual Studio 2019 makes to your solution.
 
-First of all, the Web API project has a new file named `Dockerfile`, that uses stages to build your application. Take a look at the file in your Web API project:
+First of all, the Web API project has a new file named `Dockerfile`, that uses stages to build your application (multi-stage Dockerfile). Take a look at the `Dockerfile` in your Web API project:
+
 ```docker
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
 WORKDIR /app
@@ -112,17 +117,25 @@ COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "RetroGamingWebAPI.dll"]
 ```
 
-This file creates a clean base image, that is based on the runtime only. The next stage uses an image with the SDK to build the application. It publishes the build and in the final stage it uses the `COPY --from` syntax to only use the putput of the previous stage in your clean base image. [Read more about multi-stage builds here](https://docs.docker.com/develop/develop-images/multistage-build/)
+The `Dockerfile` contains 4 stages:
+- The first stage creates a clean base image, that is based on the runtime only. 
+- The second stage uses an SDK image to build the application. 
+- The third stage publishes the build application 
+- The final stage uses the `COPY --from` syntax to only use the published output of the previous stage to use as the application to run87. 
 
-Most noticeably you will see that a new Docker Compose project with the name `docker-compose` has been added. It is now your start project for the solution. *(If it's not, configure it as the startup project.)*
+[Read more about multi-stage builds here](https://docs.docker.com/develop/develop-images/multistage-build/)
 
-Compositions are essential to manage the many different combinations of containers, images, run-time details and environmental settings. Typically an application consists of multiple running containers. Managing each of these individually is both difficult and labor intensive. Moreover, it does not define the relationships and dependencies that exist.
+Most noticably you will see that a new `docker-compose` project has been added containing a `docker-compose.yml`. It is now your start project for the solution. *(If it's not, configure it as the startup project.)*
 
-Docker Compose is the tool of choice for this lab to manage compositions of containers in your development environment. It allows you to use a command-line interface, similar to the Docker CLI, to interact with compositions defined in a `docker-compose.yml` file. There are other tools that allow the creation of compositions, such as the YAML files for Kubernetes. You will use Docker Compose in this lab.
+A `Dockerfile` does not define relationships and dependencies that could exist in many different combinations of containers, images, run-time details and environmental settings. Typically an application consists of multiple running containers. Managing each of these individually is both difficult and labor intensive.
 
-## <a name="angular"></a>Add Docker support to Angular applicatio
+`docker-dompose` is the tool of choice for this lab to manage compositions of containers in your development environment. It allows you to use a command-line interface, similar to the `Docker CLI`, to interact with compositions defined in a `docker-compose.yml` file. 
 
-The Angular application also need to be made available for Docker. Start by creating a `Dockerfile` inside the `RetroGamingSPA` directory.
+> There are other tools that also allow the creation of compositions, such as the YAML files for Kubernetes.
+
+## <a name="angular"></a>Add Docker support to Angular application
+
+The Angular application also needs to be made available for Docker. Start by creating a `Dockerfile` in the root of `RetroGamingSPA` project.
 
 ```Dockerfile
 ### Build ###
@@ -146,34 +159,57 @@ docker build -t retrogamingspa:latest .
 docker run -p 4200:80 retrogamingspa:latest 
 ```
 
+Navigate to http://localhost:4200 and see if the front-end is running.
+
 ## <a name="work"></a>Working with compositions and Docker Compose
-To become familiar with Docker Compose and using `docker-compose.exe`, you will first start a container based on a YAML file to compile your code and build container images. Create a file named `docker-compose.ci.build.yml` in the root of your solution and add the following content to it:
+Let's start by building and running with `docker-compose` and get familiar with its concepts. The following `docker-compose.yml` and `docker-compose.override.yml` have been added by adding Docker Support in the previous exercise.
+
+`docker-compose.yml` 
 ```yaml
-version: '3.6'
+version: '3.4'
 
 services:
-  ci-build:
-    image: mcr.microsoft.com/dotnet/core/sdk:3.0
-    volumes:
-      - .:/src
-    working_dir: /src
-    command: /bin/bash -c "dotnet restore ./BuildingModernWebApplications.sln && dotnet publish ./BuildingModernWebApplications.sln -c Release -o ./obj/Docker/publish"
+  retrogamingwebapi:
+    image: ${DOCKER_REGISTRY-}retrogamingwebapi
+    build:
+      context: .
+      dockerfile: RetroGamingWebAPI/Dockerfile
 ```
 
-The definitions in the compose file describe a service called `ci-build` that uses the image `mcr.microsoft.com/dotnet/core/sdk:3.0` and has a volume mapping to the root of the source code. The command starts a build in the working directory `src` inside the container.
+`docker-compose.override.yml`
 
-Start this composition by executing the command from the root of the Visual Studio solution where the Docker Compose YAML files are located:
+```yaml
+version: '3.4'
+
+services:
+  retrogamingwebapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=44366
+    ports:
+      - "49154:80"
+      - "44366:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+```
+
+The definitions in the `docker-compose.yml` file describe the build stage of the `retrogamingwebapi` service from a `Dockerfile`. The definitions in the `docker-compose.yml` describe the run stage of the service.
+
+Start the following composition command at the root `BuildingModernWebApplications` where the Docker Compose YAML files are located:
 
 ```cmd
-docker-compose -f docker-compose.ci.build.yml up
+docker-compose up
 ```
 
-The command will 'up' (meaning 'start') the composition and perform a build and publish of the project in the solution `BuildingModernWebApplications`. You can use this in your build pipeline to perform the build and publishing of the binaries required to create the container images of the solution without the need for Visual Studio 2019 or Code.
+The command will `up` (meaning 'start') the composition and perform a build and publish of the `RetroGamingWebAPI` project in the solution `BuildingModernWebApplications`. 
+
+> You can also use this in your build pipeline to perform the build and publishing of the binaries required to create the container images of the solution without the need for Visual Studio 2019 or Code.
 
 ## Docker Compose in Visual Studio 2019
-The tooling support of Visual Studio 2019 for Docker and Docker Compose takes care of compiling the sources and building images for you. You do not need a build file like you have just used.
 
-Inspect the contents of the `docker-compose.yml` and `docker-compose.override.yml` files if you haven't already. The compose file specifies which services (containers), volumes (data) and networks (connectivity) need to be created and run. The `override` file is used for local hosting and debugging purposes. Ensure that you understand the meaning of the various entries in the YAML files.
+The tooling support of Visual Studio 2019 for Docker and Docker Compose takes care of compiling the sources and building images for you. You do not need a build file like you have just used.
 
 Notice how the `docker-compose.override.yml` file contains some port mappings, defining the ports inside the container and the composition and outside of it. Your actual port numbers are most likely different:
 ```
