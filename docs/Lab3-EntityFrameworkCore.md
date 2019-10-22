@@ -32,26 +32,32 @@ The next step is to create domain entities that represent the data being stored 
 
 Create a new class in the `Models` folder called `Gamer`:
 ```c#
-public class Gamer
+namespace RetroGamingWebAPI.Models
 {
-   public int Id { get; set; }
-   public Guid GamerGuid { get; set; }
-   public string Nickname { get; set; }
-   public virtual ICollection<Score> Scores { get; set; }
+   public class Gamer
+   {
+      public int Id { get; set; }
+      public Guid GamerGuid { get; set; }
+      public string Nickname { get; set; }
+      public virtual ICollection<Score> Scores { get; set; }
+   }
 }
 ```
 and another class `Score`:
 ```C#
 using System.ComponentModel.DataAnnotations.Schema;
 
-public class Score
+namespace RetroGamingWebAPI.Models
 {
-   public int Id { get; set; }
-   public int Points { get; set; }
-   public string Game { get; set; }
-   public int GamerId { get; set; }
-   [ForeignKey("GamerId")]
-   public Gamer Gamer { get; set; }
+   public class Score
+   {
+      public int Id { get; set; }
+      public int Points { get; set; }
+      public string Game { get; set; }
+      public int GamerId { get; set; }
+      [ForeignKey("GamerId")]
+      public Gamer Gamer { get; set; }
+   }
 }
 ```
 `System.ComponentModel.DataAnnotations.Schema` is needed for the `[ForeignKey]` attribute.
