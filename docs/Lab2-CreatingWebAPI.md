@@ -192,4 +192,4 @@ Try the new method by navigating to the leaderboard endpoint https://localhost:5
 ## Wrapup
 You have just enhanced your initially empty web API with some basic functionality and tested it. The next steps will be to add some real world functionality, including Entity Framework Core Object relational mapping, XML support, content negotiation, OpenAPI documentation, versioning and CORS security.
 
-Continue with [Lab 3 - Entity Framework](Lab3-EntityFrameworkCore.md).
+Continue with [Lab 3 - Entity Framework Core and Dependency Injection](Lab3-EntityFrameworkCore.md).
