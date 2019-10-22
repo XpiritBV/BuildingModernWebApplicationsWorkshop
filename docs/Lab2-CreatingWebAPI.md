@@ -25,15 +25,6 @@ Next, create a new folder for your entire solution. This can be any folder, e.g.
 git init
 dotnet new gitignore
 ``` 
-If you are using Visual Studio Code you can add this to the `.gitignore` file:
-```git
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.code-workspace
-``` 
 
 To get started building the Web API, you are going to use the templating engine of the ASP.NET Core SDK to scaffold a new solution file for Visual Studio 2019:
 ```sh
