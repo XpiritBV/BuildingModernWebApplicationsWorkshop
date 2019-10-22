@@ -59,7 +59,7 @@ Stop the application by pressing Ctrl+C.
 
 Open your new solution `BuildingModernWebApplications.sln` in Visual Studio 2019 or Code and examine the files that are in the project. 
 
-Pay extra attention to the `Program.cs` file which contais the .NET Core 3.0 application bootstrapping using the new `Host` class.
+Pay extra attention to the `Program.cs` file which contains the .NET Core 3.0 application bootstrapping using the new `Host` class.
 
 In the `Startup.cs` file add a constructor that has an `IConfiguration` and `IHostEnvironment` parameter and store these in read-only properties. First, import the configuration library.
 ```c#
