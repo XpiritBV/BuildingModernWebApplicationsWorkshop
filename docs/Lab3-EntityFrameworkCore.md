@@ -66,8 +66,6 @@ These classes represent our simplistic domain model for retro video gaming. The 
 
 ## <a name="createdbcontext"></a>Creating and registering an in-memory RetroGaming Database Context
 
-//TODO: Some extra explanation about DbContext
-
 The first step is to create a new `Infrastructure` folder inside the `RetroGamingWebAPI` project and add a class named `RetroGamingContext`. 
 
 > The folder structure should look like this:
@@ -99,11 +97,8 @@ namespace RetroGamingWebAPI.Infrastructure
 }
 ```
 
-//TODO some explanation about the Context File...
-
 Configure the RetroGamingContext as an in-memory database. Open the `Startup.cs` file and locate the `ConfigureServices` method. Add the bootstrapping of EF Core and the in-memory provider:
 ```c#
-
 public void ConfigureServices(IServiceCollection services)
 {
    /* ... */
@@ -114,7 +109,6 @@ public void ConfigureServices(IServiceCollection services)
 ```
 
 ## <a name="dbcontext"></a>Using the database context
-
 To use the new DbContext class in your `LeaderboardController.cs` it needs to be injected by the dependency injection system. Change the constructor to accept an argument of type `RetroGamingContext` and store it in a readonly field. Also remove the existing `private readonly List<HighScore> scores` and its initializer in the constructor. 
 ```c#
 public class LeaderboardController : ControllerBase
@@ -229,9 +223,7 @@ public async Task PostScore(string nickname, string game, [FromBody] int points)
    await context.SaveChangesAsync().ConfigureAwait(false);
 }
 ```
-Use a tool like Postman to test the `POST` action. Make sure you set the `Content-Type` to `application/json`.
-
-//TODO Example url to post to with parameters and body...
+Use a tool like Postman to test the `POST` action at `/api/scores`. Make sure you set the `Content-Type` to `application/json`, provide the gamer and video game name in the URL and a plain integer score in the body of the request.
 
 ## Using Dependency Injection
 .NET Core has a built-in dependency injection system and ASP.NET Core makes extensive use of this itself.  
