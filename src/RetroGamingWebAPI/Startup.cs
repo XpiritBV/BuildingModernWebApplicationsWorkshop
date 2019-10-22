@@ -35,17 +35,8 @@ namespace RetroGamingWebAPI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<RetroGamingContext>(options =>
-            {
-                string connectionString =
-                    Configuration.GetConnectionString("RetroGamingContext");
-                options.UseSqlServer(connectionString, sqlOptions =>
-                {
-                    sqlOptions.EnableRetryOnFailure(
-                    maxRetryCount: 5,
-                    maxRetryDelay: TimeSpan.FromSeconds(30),
-                    errorNumbersToAdd: null);
-                });
+            services.AddDbContext<RetroGamingContext>(options => {
+                options.UseInMemoryDatabase(databaseName: "RetroGaming");
             });
 
             services.AddTransient<IMailService, MailService>();

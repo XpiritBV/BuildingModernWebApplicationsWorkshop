@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroGamingWebAPI", "RetroGamingWebAPI\RetroGamingWebAPI.csproj", "{A528258B-8E49-47D9-977B-BFF404CFA389}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{283AB5EB-B1E2-48EA-8081-269A3E7993D6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{951201B5-56E7-4717-9E56-83332392C7CB}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
