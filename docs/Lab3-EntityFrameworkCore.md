@@ -109,17 +109,15 @@ public void ConfigureServices(IServiceCollection services)
 
 ## <a name="dbcontext"></a>Using the database context
 
-To use the new DbContext class in your `LeaderboardController.cs` it needs to be injected by the dependency injection system. Change the constructor to accept an argument of type `RetroGamingContext` and store it in a readonly field.
+To use the new DbContext class in your `LeaderboardController.cs` it needs to be injected by the dependency injection system. Change the constructor to accept an argument of type `RetroGamingContext` and store it in a readonly field. Also remove the existing `private readonly List<HighScore> scores` and its initializer in the constructor. 
 ```c#
 public class LeaderboardController : ControllerBase
 {
    private readonly RetroGamingContext context;
-   /* ... */
 
    public LeaderboardController(RetroGamingContext context)
    {
       this.context = context;
-      /* ... */
    }
 }
 ```
@@ -161,14 +159,13 @@ public class DbInitializer
 ```
 and alter the `Configure` method of the `Startup.cs` class to run the initializer for only the development environment.
 ```C#
-public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+// Add context as Configure parameter
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RetroGamingContext context)
 {
    if (env.IsDevelopment())
    {
-      DbInitializer.Initialize(context).Wait();
-      //TODO: UseStatusCodePages Copy paste foutje?
-      app.UseStatusCodePages();
       /* ... */
+      DbInitializer.Initialize(context).Wait();
    }
 
    /* ... */
