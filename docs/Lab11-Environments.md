@@ -23,7 +23,6 @@ Open the solution `BuildingModernWebApplications.sln` in Visual Studio. Take you
 - `RetroGamingWebAPI`, an ASP.NET Core Web API.
 - `docker-compose`, a project for running a Docker Compose composition.
 
-
 There is another way to accomplish the same thing. This uses a multi-stage build in the Dockerfile. Instead of running a new composition that spins up a container to build a container, you can create a
 
 ## <a name="create"></a>Create compositions for different environments
@@ -53,7 +52,7 @@ Take a moment to contemplate whether the `sqlserver` service should be defined i
 
 Change the location of the definition to the override compose file. Merge it with the existing service. 
 
-Enhance the override file by adding the dependencies of the web api on the `sqlserver` service. A dependent service indicates this by adding a `depends_on` naming the dependency by service name. In our case this would mean the following at the end of the `retrogamingwebapi` service in the `docker-compose.override.yml` file:
+Enhance the override file by adding the dependencies of the Web API on the `sqlserver` service. A dependent service indicates this by adding a `depends_on` naming the dependency by service name. In our case this would mean the following at the end of the `retrogamingwebapi` service in the `docker-compose.override.yml` file:
 
 ```yaml
 depends_on:

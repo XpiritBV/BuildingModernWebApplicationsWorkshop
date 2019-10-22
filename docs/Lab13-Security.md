@@ -83,7 +83,7 @@ Take note of the DNS name of the Key Vault in the `Properties` section.
 
 <img src="images/KeyVaultDNSName.png" width="400" />
 
-Next, allow the Web API access to the Key Vault. Register the web API as an Azure Active Directory application. Go to the Azure Active Directory for your Azure subscription and choose `App Registrations`. Create a new application registration called `Leaderboard Web API` of type `Web app / API` and use the local URL `http://localhost:44369` as the Sign-on URL value.
+Next, allow the Web API access to the Key Vault. Register the Web API as an Azure Active Directory application. Go to the Azure Active Directory for your Azure subscription and choose `App Registrations`. Create a new application registration called `Leaderboard Web API` of type `Web app / API` and use the local URL `http://localhost:44369` as the Sign-on URL value.
 
 <img src="images/AzureADAppRegistration.png" width="300" />
 
@@ -141,7 +141,7 @@ The double-dash in the name of the secret, is a convention to indicate a section
 
 Remove the connection string value from `appsettings.json`.
 
-Run your web API separately by clicking `Debug, Start new instance` from the right-click context menu of the project. Add a breakpoint in the ConfigureServices method and check whether the connection string is read correctly. If all is well, run the composition locally.
+Run your Web API separately by clicking `Debug, Start new instance` from the right-click context menu of the project. Add a breakpoint in the ConfigureServices method and check whether the connection string is read correctly. If all is well, run the composition locally.
 
 ## <a name='usersecrets'></a> Using User Secrets
 

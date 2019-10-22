@@ -1,7 +1,7 @@
 # Workshop Building modern web applications using .NET Core and Angular
 Welcome to the workshop "Building modern web applications using .NET Core and Angular". 
 
-In this workshop you will create a .NET Core application with a Single Page Application frontend and learn how to create and design a solution for modern web applications running in a Docker ecosystem.
+In this workshop you will create a .NET Core application with a Single Page Application frontend in Angular and learn how to create and design a solution for modern web applications running in a Docker ecosystem.
 
 To get the best experience with the hands-on-labs it is recommended that you prepare the following:
 - Laptop for development and running containers
@@ -16,12 +16,12 @@ Additionally, for hosting a container cluster in Microsoft Azure you will need a
 ## Labs in this workshop
 
 - [Lab 1 - Getting started](docs/Lab1-GettingStarted.md)
-- [Lab 2 - Docker101](docs/Lab2-Docker101.md)
-- [Lab 3 - Dockerizing .NET Core](docs/Lab3-DockerizingNETCore.md)
-- [Lab 4 - Networking](docs/Lab4-Networking.md)
-- [Lab 5 - Environments](docs/Lab5-Environments.md)
-- [Lab 6 - Creating an Angular UI](docs/Lab6-AngularUI.md)
-- [Lab 7 - SPA for Web APIs](docs/Lab7-SPAWebAPI.md)
-- [Lab 8 - Registries and clusters](docs/Lab8-RegistriesClusters.md)
-- [Lab 9 - Security](docs/Lab9-Security.md)
-- [Lab 10 - Azure DevOps Pipelines](docs/Lab10-AzDOPipelines.md)
+- [Lab 2 - Creating your Web API](docs/Lab2-CreatingwebAPI.md)
+- [Lab 3 - Entity Framework Core and Dependency Injection](docs/Lab3-EntotyFrameworkCore.md)
+- [Lab 4 - Real world Web APIs](docs/Lab4-RealWorldWebAPI.md)
+- [Lab 5 - Getting started with Angular ](docs/Lab5-GettingStartedAngular.md)
+- [Lab 6 - Creating Angular components](docs/Lab6-CreatingComponents.md)
+- [Lab 7 - Consuming a REST Web API from Angular](docs/Lab7-ConnectToApi.md)
+- [Lab 8 - Docker 101](docs/Lab8-Docker101.md)
+- [Lab 9 - Dockerizing .NET Core](docs/Lab9-DockerizingNETCore.md)
+- [Lab 10 - Networking](docs/Lab10-Networking.md)

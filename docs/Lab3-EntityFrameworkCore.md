@@ -1,6 +1,6 @@
 # Lab 3 - Entity Framework Core and Dependency Injection
 
-In this lab you will add more functionality to your web API so it can actually be used. You will use Entity Framework Core with an in-memory database provider and create a domain model to be serialized using EF Core. In the end you will explicitly register a dependency on a fictitious mail service and inject it using the dependency injection system of .NET Core.
+In this lab you will add more functionality to your Web API so it can actually be used. You will use Entity Framework Core with an in-memory database provider and create a domain model to be serialized using EF Core. In the end you will explicitly register a dependency on a fictitious mail service and inject it using the dependency injection system of .NET Core.
 
 Goals for this lab: 
 - [Install Entity Framework Core](#install)
@@ -140,7 +140,7 @@ public async Task<ActionResult<IEnumerable<HighScore>>> Get()
 
 ## <a name="initialize"></a>Initializing the database 
 
-During development of our web API it is convenient to have some test data available. We will use a database initializer to create some dummy data. It can also be used to populate some static master data. Add a new `DbInitializer` class inside the `Infrastructure` folder. 
+During development of our Web API it is convenient to have some test data available. We will use a database initializer to create some dummy data. It can also be used to populate some static master data. Add a new `DbInitializer` class inside the `Infrastructure` folder. 
 ```c#
 public class DbInitializer
 {
@@ -230,7 +230,7 @@ Use a tool like Postman to test the `POST` action. Make sure you set the `Conten
 ## Using Dependency Injection
 .NET Core has a built-in dependency injection system and ASP.NET Core makes extensive use of this itself.  
 
-To get familiar with injecting dependencies in our web API you will add a fictious mail service as an abstraction and an implementation. Create interface `IMailService.cs` and class `MailService` inside the `Infrastructure` folder.
+To get familiar with injecting dependencies in our Web API you will add a fictious mail service as an abstraction and an implementation. Create interface `IMailService.cs` and class `MailService` inside the `Infrastructure` folder.
 
 Add the following to interface `IMailService.cs` 
 ```C#
@@ -291,8 +291,8 @@ public async Task PostScore(string nickname, string game, [FromBody] int points)
 Verify that the mail service object is resolved and injected correctly and that the API still works.
 
 ## Wrapup
-You have just enhanced your initially empty web API to include actual functionality. This included Entity Framework Core Object relational mapping, and the use of .NET Core's dependency injection system. 
+You have just enhanced your initially empty Web API to include actual functionality. This included Entity Framework Core Object relational mapping, and the use of .NET Core's dependency injection system. 
 
 In the next labs you will add REST related capabilities such as XML support, content negotiation, OpenAPI documentation, versioning and CORS security policies.
 
-Continue with [Lab 4 - Real world web APIs](Lab4-RealWorldWebAPI.md).
+Continue with [Lab 4 - Real world Web APIs](Lab4-RealWorldWebAPI.md).

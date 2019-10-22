@@ -1,4 +1,4 @@
-# Lab 7 - Connect to the API
+# Lab 7 - Consuming a REST Web API from Angular
 
 In this lab you will use the components you have created and connect them to the .NET Core API. You will learn about generating an OpenAPI client inside your Angular application and using it to make `GET` and `POST` requests.
 

@@ -78,7 +78,7 @@ You should be able to ping container `c3` from inside itself with `ping c3.conta
 
 The final step is to design your network topology and use the Docker Compose YAML files to specify the networks and aliases for the containers.
 
-Create a visual diagram for the three containers and draw assign them to two networks. The boundaries of these networks should be such that the web application can reach the web API, but not the SQL Server database. On the other hand, the Web API should be able to reach both the SQL Server database and the web application, but not from the same network.
+Create a visual diagram for the three containers and draw assign them to two networks. The boundaries of these networks should be such that the web application can reach the Web API, but not the SQL Server database. On the other hand, the Web API should be able to reach both the SQL Server database and the web application, but not from the same network.
 
 > ##### A choice of network type
 > What type of network drive should the two networks use? Remember that your are currently in a local, single-host situation. How would that change when running in a cluster?
