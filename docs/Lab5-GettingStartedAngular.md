@@ -65,7 +65,7 @@ It uses the `package.json` file that contains the npm scripts. Examine the file 
 ```json
 # package.json
 {
-  "name": "angular-application",
+  "name": "RetroGamingSPA",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -109,7 +109,7 @@ ng g module AppMaterial --flat=true
 # --flat creates the module file without a directory
 ```
 
-The above command generates a module named `AppMaterialModule` in the file `src/app/app-material.module.ts`
+The above command generates a module named `AppMaterialModule` in the file `./src/app/app-material.module.ts`
 
 The reason for creating a separate module is because the amount of Material Modules can grow fast and pollutes the `app.module.ts` file. Replace the module's content with the following Material Modules which you are going to use throughout the application:
 
@@ -141,7 +141,7 @@ import {
 export class AppMaterialModule { }
 ```
 
-Next, import the `AppMaterialModule` in your AppModule file `./app/app.module.ts`. In this `AppModule` you declare what components are available for use in your application.
+Next, import the `AppMaterialModule` in your AppModule file `./src/app/app.module.ts`. In this `AppModule` you declare what components are available for use in your application.
 
 
 ```ts
@@ -194,7 +194,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 ### 4. Replace boilerplate application content
-Replace all of the content in `./app/app.component.html` with the following:
+Replace all of the content in `./src/app/app.component.html` with the following:
 
 ```html
 <mat-toolbar color="primary">
@@ -215,7 +215,7 @@ A Material toolbar is shown on every page on the top of the page.
 
 `<router-outlet>` makes sure that the right content is displayed when you navigate to a certain url. The next lab will cover `Routing` to a page.
 
-Add some styling to the app-component in file `./app/app.component.scss`
+Add some styling to the app-component in file `./src/app/app.component.scss`
 
 ```scss
 .example-icon {
