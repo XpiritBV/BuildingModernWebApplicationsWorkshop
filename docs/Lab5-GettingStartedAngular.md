@@ -7,25 +7,22 @@ Goals for this lab:
 - [Creating a new Angular application](#createangular)
 - [Adding Material Design](#materialdesign)
 
-
 ## <a name="preparing"></a>Preparing your development laptop
-
 Make sure that your laptop is up-to-date with the latest security patches and updates. This workshop is specific towards Windows as the operating system for your machine. The labs can also be done on Linux, although this might be a bit more challenging. 
 
 ### Download and install required tooling 
-
 If you already followed the instructions in [Lab 1 - Getting started](Lab1-GettingStarted.md) you can skip this part.
 
 - Download and install Visual Studio Code from https://code.visualstudio.com, 
 
-  You might already have done this in [Lab 0](Lab0-GettingStarted.md). You are going to use this IDE to create the Angular application.
+  You might already have done this in [Lab 1](Lab1-GettingStarted.md). You are going to use this IDE to create the Angular application.
 - Download and install NodeJS from https://nodejs.org/en/
 
   You need this to be able to run `npm` commands. With this you can also manage the packages of the project.
 
 - Install the Angular CLI:
 
-  Open the command line tooling in Visual Studio code
+  Open the command line tooling in Visual Studio Code
   ```sh
   npm install -g @angular/cli
   ```

@@ -66,9 +66,6 @@ public void ConfigureServices(IServiceCollection services)
 The options will enable the use of `ACCEPT` headers in browser requests.
 Returning XML requires one of the two available XML formatters `XmlSerializerFormatter` and `XmlDataContractSerializerFormatter`, which follow the W3C and Microsoft's DataContract rules for serialization respectively.
 
-TODO: XmlSerializerFormatter.. Nog steeds nodig?
-
-
 > #### Question:
 > Run your Web API again and notice the returned data format. It is now XML instead of JSON. Can you figure out why this is the case?
 
