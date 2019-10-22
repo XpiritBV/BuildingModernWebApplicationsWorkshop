@@ -16,7 +16,7 @@ Additionally, for hosting a container cluster in Microsoft Azure you will need a
 ## Labs in this workshop
 
 - [Lab 1 - Getting started](docs/Lab1-GettingStarted.md)
-- [Lab 2 - Creating your Web API](docs/Lab2-CreatingwebAPI.md)
+- [Lab 2 - Creating your Web API](docs/Lab2-CreatingWebAPI.md)
 - [Lab 3 - Entity Framework Core and Dependency Injection](docs/Lab3-EntotyFrameworkCore.md)
 - [Lab 4 - Real world Web APIs](docs/Lab4-RealWorldWebAPI.md)
 - [Lab 5 - Getting started with Angular ](docs/Lab5-GettingStartedAngular.md)
