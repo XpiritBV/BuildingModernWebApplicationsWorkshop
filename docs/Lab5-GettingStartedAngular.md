@@ -3,10 +3,12 @@
 This lab will make sure you have set up your laptop correctly to create and run an Angular application.
 
 Goals for this lab:
-- Preparing your development laptop
-- Create new Angular application
+- [Preparing your development laptop](#preparing)
+- [Creating a new Angular application](#createangular)
+- [Adding Material Design](#materialdesign)
 
-## Preparing your development laptop
+
+## <a name="preparing"></a>Preparing your development laptop
 
 Make sure that your laptop is up-to-date with the latest security patches and updates. This workshop is specific towards Windows as the operating system for your machine. The labs can also be done on Linux, although this might be a bit more challenging.
 
@@ -28,7 +30,7 @@ Make sure that your laptop is up-to-date with the latest security patches and up
 
 You can now initiate Angular CLI commands by typing `ng <command>` 
 
-## Creating a new Angular application
+## <a name="createangular"></a>Creating a new Angular application
  
 ### 1. Create an Angular App with the Angular CLI
 
@@ -82,7 +84,15 @@ Alternatively, you can run the application from the command-line using
 ng serve
 ```
 
-### 4. Add Material Design Components
+## <a name="materialdesign"></a>Adding Material Design
+
+Material Design offers a pretty looking interface out of the box, which can be themed. Material Design is a research field project within Google about User Friendly components and UI flows.
+
+If you want to know more about Material Design and its components:
+- https://material.angular.io/
+- https://material.io/design/
+
+### 1. Add Material Design Components
 
 ```sh
 ng add @angular/material
@@ -92,13 +102,7 @@ ng add @angular/material
 2. Set up HammerJS for gesture recognition?: **No**
 3. Set up browser animations for Angular Material?: **Yes**
 
-Material Design offers a pretty looking interface out of the box, which can be themed. Material Design is a research field project within Google about User Friendly components and UI flows.
-
-If you want to know more about Material Design and its components:
-- https://material.angular.io/
-- https://material.io/design/
-
-### 5. Import Material Design Modules in your AppModule
+### 2. Import Material Design Modules in your AppModule
 
 Create a new Module to include all your Material Design Modules:
 
@@ -163,7 +167,7 @@ Next, import the `AppMaterialModule` in your AppModule file `./app/app.module.ts
 export class AppModule {}
 ```
 
-### 5. Add Material theme to styles.scss
+### 3. Add Material theme to styles.scss
 
 Material Design comes with a set of pre-built theme colors:  
 - deeppurple-amber.css
@@ -192,7 +196,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 > https://material.angular.io/guide/theming
 
 
-### 6. Replace boilerplate application content
+### 4. Replace boilerplate application content
 
 Replace all of the content in `./app/app.component.html` with the following:
 

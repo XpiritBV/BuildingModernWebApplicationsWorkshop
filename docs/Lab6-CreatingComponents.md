@@ -4,11 +4,12 @@ During this lab you will create components with the Angular CLI to display high 
 
 Goals for this lab:
 
-- [Creating and displaying components](#inspect)
-- [Displaying high scores in a list](#manage)
-- [Creating an add score form using Angular Reactive Components](#working)
+- [Creating your first component and use it as your homepage](#firstcomponent)
+- [Creating a component to display a list of high scores](#listcomponent)
+- [Connecting high scores and high scores list components](#connecthighscores)
+- [Creating an add score form component using Angular Reactive Components](#reactiveforms)
 
-## Creating your first component and use it as your homepage
+## <a name="firstcomponent"></a>Creating your first component and use it as your homepage
 
 ### 1. Create a high scores component with the Angular CLI
 
@@ -89,7 +90,7 @@ npm start
 
 You should now see the contents of the component: "high-scores works!"
 
-## Create a new component to display a list of high scores
+## <a name="listcomponent"></a>Creating a component to display a list of high scores
 
 For this chapter you will also use the high-scores component you created in the previous chapter.
 
@@ -185,7 +186,7 @@ It will currently show an empty list when running the application. In the next c
 - **matListIcon** is an Angular directive which makes sure the icon is aligned left of the text.
 - **matLine** is an Angular directive which adds additional functionality to the html components (showing text below eachother).
 
-## Connect high scores and high scores list components
+## <a name="connecthighscores"></a>Connecting high scores and high scores list components
 
 ### 1. Initialize a list of highscores inside the HighScoresComponent
 
@@ -249,7 +250,7 @@ npm start
 > 
 > Run the application and validate whether you see the high score being logged to the console when you click on it.
 
-## Creating an add score form component using Angular Reactive Components
+## <a name="reactiveforms"></a>Creating an add score form component using Angular Reactive Components
 
 In this chapter you are going to create a new add score component, navigate to it and display a form using the Angular Reactive Components
 
