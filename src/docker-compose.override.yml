@@ -18,6 +18,10 @@ services:
     depends_on:
       - "sqlserver"
 
+  frontend:
+    ports:
+      - "4200:80"
+
   sqlserver:
     image: mcr.microsoft.com/mssql/server
     environment:

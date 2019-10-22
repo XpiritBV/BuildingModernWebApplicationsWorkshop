@@ -66,8 +66,6 @@ These classes represent our simplistic domain model for retro video gaming. The 
 
 ## <a name="createdbcontext"></a>Creating and registering an in-memory RetroGaming Database Context
 
-//TODO: Some extra explanation about DbContext
-
 The first step is to create a new `Infrastructure` folder inside the `RetroGamingWebAPI` project and add a class named `RetroGamingContext`. 
 
 > The folder structure should look like this:
@@ -99,11 +97,8 @@ namespace RetroGamingWebAPI.Infrastructure
 }
 ```
 
-//TODO some explanation about the Context File...
-
 Configure the RetroGamingContext as an in-memory database. Open the `Startup.cs` file and locate the `ConfigureServices` method. Add the bootstrapping of EF Core and the in-memory provider:
 ```c#
-
 public void ConfigureServices(IServiceCollection services)
 {
    /* ... */
@@ -114,7 +109,6 @@ public void ConfigureServices(IServiceCollection services)
 ```
 
 ## <a name="dbcontext"></a>Using the database context
-
 To use the new DbContext class in your `LeaderboardController.cs` it needs to be injected by the dependency injection system. Change the constructor to accept an argument of type `RetroGamingContext` and store it in a readonly field. Also remove the existing `private readonly List<HighScore> scores` and its initializer in the constructor. 
 ```c#
 public class LeaderboardController : ControllerBase
@@ -231,9 +225,7 @@ public async Task PostScore(string nickname, string game, [FromBody] int points)
 ```
 Use a tool like Postman to test the `POST` action. Make sure you set the `Content-Type` to `application/json`.
 
-For example: 
-
-Send a POST request to `https://localhost:5001/api/scores/LX360/pacman` where LX360 is the username and pacman is the game. 
+For example, send a POST request to `https://localhost:5001/api/scores/LX360/pacman` where LX360 is the username and pacman is the game. 
 In the body of the request add the points `100`.
 
 ## Using Dependency Injection

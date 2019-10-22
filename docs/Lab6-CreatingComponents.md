@@ -205,12 +205,12 @@ export class HighScoresComponent implements OnInit {
   ngOnInit() {
     this.highScores = [
       {
-        nickname: "LX360" /* Alex Thissen gamertag */,
+        nickname: "LX360",
         game: "Pac-Man",
         points: 96070
       },
       {
-        nickname: "LeekGeek" /* Thijs Limmen gamertag */,
+        nickname: "LeekGeek",
         game: "Space Invaders",
         points: 7028
       }
@@ -260,7 +260,7 @@ ng generate component add-score --module=app
 The following component should have been generated:  `./src/app/add-score/*`
 
 ### 2. Add navigation to the add score page
-- Make the following changes to the Routing Module `./app/app-routing.module.ts`
+- Make the following changes to the Routing Module `./src/app/app-routing.module.ts`
 ```ts
 const routes: Routes = [
   {
@@ -301,7 +301,7 @@ You can optionally also create a routerlink in the material toolbar in the file 
 
 ### 3. Create a form with Material Input components
 
-Create a new form with Material components in the new add score component `./angular-application/src/app/add-score.component.html`
+Create a new form with Material components in the new add score component `./src/app/add-score.component.html`
 
 ```html
 <form class="add-score-form">
