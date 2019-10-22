@@ -223,7 +223,10 @@ public async Task PostScore(string nickname, string game, [FromBody] int points)
    await context.SaveChangesAsync().ConfigureAwait(false);
 }
 ```
-Use a tool like Postman to test the `POST` action at `/api/scores`. Make sure you set the `Content-Type` to `application/json`, provide the gamer and video game name in the URL and a plain integer score in the body of the request.
+Use a tool like Postman to test the `POST` action. Make sure you set the `Content-Type` to `application/json`.
+
+For example, send a POST request to `https://localhost:5001/api/scores/LX360/pacman` where LX360 is the username and pacman is the game. 
+In the body of the request add the points `100`.
 
 ## Using Dependency Injection
 .NET Core has a built-in dependency injection system and ASP.NET Core makes extensive use of this itself.  
