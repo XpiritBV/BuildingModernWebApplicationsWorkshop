@@ -23,5 +23,5 @@ Additionally, for hosting a container cluster in Microsoft Azure you will need a
 - [Lab 6 - Creating Angular components](docs/Lab6-CreatingComponents.md)
 - [Lab 7 - Consuming a REST Web API from Angular](docs/Lab7-ConsumingWebAPI.md)
 - [Lab 8 - Docker 101](docs/Lab8-Docker101.md)
-- [Lab 9 - Dockerizing .NET Core](docs/Lab9-DockerizingNETCore.md)
+- [Lab 9 - Dockerizing the solution](docs/Lab9-DockerizingSolution.md)
 - [Lab 10 - Networking](docs/Lab10-Networking.md)
