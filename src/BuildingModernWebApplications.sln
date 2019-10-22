@@ -7,30 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroGamingWebAPI", "RetroG
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{283AB5EB-B1E2-48EA-8081-269A3E7993D6}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "angular-application", "RetroGamingSPA\angular-application\", "{D22385A5-A699-4676-9DF7-5CD149BBB1DE}"
-	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_3371"
-		Debug.AspNetCompiler.PhysicalPath = "RetroGamingSPA\angular-application\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_3371\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_3371"
-		Release.AspNetCompiler.PhysicalPath = "RetroGamingSPA\angular-application\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_3371\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "3371"
-		SlnRelativePath = "RetroGamingSPA\angular-application\"
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{951201B5-56E7-4717-9E56-83332392C7CB}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
+		docker-compose.ci.build.yml = docker-compose.ci.build.yml
 	EndProjectSection
 EndProject
 Global
@@ -67,18 +47,6 @@ Global
 		{283AB5EB-B1E2-48EA-8081-269A3E7993D6}.Release|x64.Build.0 = Release|Any CPU
 		{283AB5EB-B1E2-48EA-8081-269A3E7993D6}.Release|x86.ActiveCfg = Release|Any CPU
 		{283AB5EB-B1E2-48EA-8081-269A3E7993D6}.Release|x86.Build.0 = Release|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Debug|x64.Build.0 = Debug|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Debug|x86.Build.0 = Debug|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Release|x64.ActiveCfg = Debug|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Release|x64.Build.0 = Debug|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Release|x86.ActiveCfg = Debug|Any CPU
-		{D22385A5-A699-4676-9DF7-5CD149BBB1DE}.Release|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

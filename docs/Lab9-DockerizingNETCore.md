@@ -86,7 +86,6 @@ Right-click the RetroGamingWebAPI and start to debug a new instance. Navigate to
 Make sure you know how this application is implemented. Set breakpoints if necessary and navigate the flow of the application for the home page.
 
 ## <a name="add"></a>Add Docker support
-
 Visual Studio 2019 offers tooling for adding support to run your application in a Docker container. You will first add container support to the Web API project.
 
 To get started you can right-click the RetroGamingWebApi project and select Add, Container Orchestrator Support from the context menu. Choose `Docker Compose` as the local orchestrator from the dropdown.
@@ -97,9 +96,79 @@ In the next dialog, choose `Linux` as the target operating system.
 
 <img src="images/AddDockerSupportTargetOS.png" width="400" />
 
-Observe the changes that Visual Studio 2019 makes to your solution.  
+Observe the changes that Visual Studio 2019 makes to your solution.
 
-Most noticeably you will see that a new Docker Compose project has been added with the name `docker-compose`. It is now your start project for the solution. *(If it's not, make sure to configure it as the startup project.)*
+First of all, the Web API project has a new file named `Dockerfile`, that uses stages to build your application. Take a look at the file in your Web API project:
+```docker
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
+WORKDIR /src
+COPY ["RetroGamingWebAPI/RetroGamingWebAPI.csproj", "RetroGamingWebAPI/"]
+RUN dotnet restore "RetroGamingWebAPI/RetroGamingWebAPI.csproj"
+COPY . .
+WORKDIR "/src/RetroGamingWebAPI"
+RUN dotnet build "RetroGamingWebAPI.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "RetroGamingWebAPI.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "RetroGamingWebAPI.dll"]
+```
+
+This file creates a clean base image, that is based on the runtime only. The next stage uses an image with the SDK to build the application. It publishes the build and in the final stage it uses the `COPY --from` syntax to only use the putput of the previous stage in your clean base image. [Read more about multi-stage builds here](https://docs.docker.com/develop/develop-images/multistage-build/)
+
+Most noticeably you will see that there is also a new Docker Compose project with the name `docker-compose` has been added. It is now your start project for the solution. *(If it's not, make sure to configure it as the startup project.)*
+
+Compositions are essential to manage the many different combinations of containers, images, run-time details and environmental settings. Typically an application consists of multiple running containers. Managing each of these individually is both difficult and labor intensive. Moreover, it does not define the relationships and dependencies that exist.
+
+Docker Compose is the tool of choice for this lab to manage compositions of containers in your development environment. It allows you to use a command-line interface, similar to the Docker CLI, to interact with compositions defined in a `docker-compose.yml` file. There are other tools that allow the creation of compositions, such as the YAML files for Kubernetes. You will use Docker Compose in this lab.
+
+## <a name="work"></a>Working with compositions and Docker Compose
+
+To become familiar with Docker Compose and using `docker-compose.exe`, you will first start a container based on a YAML file to compile your code and build container images. Create a file named `docker-compose.ci.build.yml` in the root of your solution and add the following content to it:
+```yaml
+version: '3.6'
+
+services:
+  ci-build:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.0
+    volumes:
+      - .:/src
+    working_dir: /src
+    command: /bin/bash -c "dotnet restore ./BuildingModernWebApplications.sln && dotnet publish ./BuildingModernWebApplications.sln -c Release -o ./obj/Docker/publish"
+```
+
+The definitions in the compose file describe a service called `ci-build` that uses the image `mcr.microsoft.com/dotnet/core/sdk:3.0` and has a volume mapping to the root of the source code. The command starts a build in the working directory `src` inside the container.
+
+Start this composition by executing the command from the root of the Visual Studio solution where the Docker Compose YAML files are located:
+
+```cmd
+docker-compose -f docker-compose.ci.build.yml up
+```
+
+The command will 'up' (meaning 'start') the composition and perform a build and publish of the project in the solution `BuildingModernWebApplications`.
+
+You could use this composition in your build pipeline to perform the build and publishing of the binaries required to create the container images of the solution.
+
+## Docker Compose in Visual Studio 2019
+The tooling support of Visual Studio 2019 for Docker and Docker Compose takes care of compiling the sources and building images for you. You do not need a build file like you have just used.
+
+You can still use `docker-compose.exe` to start the composition by hand:
+```cmd
+docker-compose -f docker-compose.yml -f docker-compose.override.yml up
+```
+or simply 
+```cmd
+docker-compose up
+```
+as the tooling assumes that your files are named `docker-compose.yml` and `docker-compose.override.yml` respe
 
 Inspect the contents of the `docker-compose.yml` and `docker-compose.override.yml` files if you haven't already. The compose file specifies which services (containers), volumes (data) and networks (connectivity) need to be created and run. The `override` file is used for local hosting and debugging purposes. Ensure that you understand the meaning of the various entries in the YAML files.
 
