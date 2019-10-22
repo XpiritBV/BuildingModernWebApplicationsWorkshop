@@ -207,12 +207,12 @@ export class HighScoresComponent implements OnInit {
   ngOnInit() {
     this.highScores = [
       {
-        nickname: "LX360" /* Alex Thissen gamertag */,
+        nickname: "LX360",
         game: "Pac-Man",
         points: 96070
       },
       {
-        nickname: "LeekGeek" /* Thijs Limmen gamertag */,
+        nickname: "LeekGeek",
         game: "Space Invaders",
         points: 7028
       }

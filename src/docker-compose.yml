@@ -6,3 +6,6 @@ services:
     build:
       context: .
       dockerfile: RetroGamingWebAPI/Dockerfile
+
+  frontend:
+    build: RetroGamingSPA/.

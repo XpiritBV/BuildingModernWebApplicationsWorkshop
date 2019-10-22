@@ -5,6 +5,7 @@ During this lab you will take an existing application and port it to use Docker 
 Goals for this lab:
 - [Run existing application](#run)
 - [Add Docker support to .NET Core application](#add)
+- [Add Docker support to Angular application](#angular)
 - [Run and debug applications from containers](#debug)
 - [Build container images](#build)
 - [Running SQL Server in a Docker container](#sql)
@@ -129,6 +130,32 @@ Most noticeably you will see that there is also a new Docker Compose project wit
 Compositions are essential to manage the many different combinations of containers, images, run-time details and environmental settings. Typically an application consists of multiple running containers. Managing each of these individually is both difficult and labor intensive. Moreover, it does not define the relationships and dependencies that exist.
 
 Docker Compose is the tool of choice for this lab to manage compositions of containers in your development environment. It allows you to use a command-line interface, similar to the Docker CLI, to interact with compositions defined in a `docker-compose.yml` file. There are other tools that allow the creation of compositions, such as the YAML files for Kubernetes. You will use Docker Compose in this lab.
+
+## <a name="angular"></a>Add Docker support to Angular applicatio
+
+The Angular application also need to be made available for Docker. Start by creating a `Dockerfile` inside the `RetroGamingSPA` directory.
+
+```Dockerfile
+### Build ###
+FROM node:alpine AS build
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install && npm run build
+
+### Run ###
+FROM nginx:alpine
+
+COPY --from=build /app/dist/* /usr/share/nginx/html/
+```
+
+Try running the docker container from the `RetroGamingSPA` directory:
+```sh
+docker build -t retrogamingspa:latest .
+docker run -p 4200:80 retrogamingspa:latest 
+```
 
 ## <a name="work"></a>Working with compositions and Docker Compose
 
