@@ -231,7 +231,10 @@ public async Task PostScore(string nickname, string game, [FromBody] int points)
 ```
 Use a tool like Postman to test the `POST` action. Make sure you set the `Content-Type` to `application/json`.
 
-//TODO Example url to post to with parameters and body...
+For example: 
+
+Send a POST request to `https://localhost:5001/api/scores/LX360/pacman` where LX360 is the username and pacman is the game. 
+In the body of the request add the points `100`.
 
 ## Using Dependency Injection
 .NET Core has a built-in dependency injection system and ASP.NET Core makes extensive use of this itself.  
