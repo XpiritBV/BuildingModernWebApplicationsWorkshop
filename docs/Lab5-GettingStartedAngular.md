@@ -10,16 +10,18 @@ Goals for this lab:
 
 ## <a name="preparing"></a>Preparing your development laptop
 
-Make sure that your laptop is up-to-date with the latest security patches and updates. This workshop is specific towards Windows as the operating system for your machine. The labs can also be done on Linux, although this might be a bit more challenging.
+Make sure that your laptop is up-to-date with the latest security patches and updates. This workshop is specific towards Windows as the operating system for your machine. The labs can also be done on Linux, although this might be a bit more challenging. 
 
 ### Download and install required tooling 
+
+If you already followed the instructions in [Lab 1 - Getting started](Lab1-GettingStarted.md) you can skip this part.
 
 - Download and install Visual Studio Code from https://code.visualstudio.com, 
 
   You might already have done this in [Lab 0](Lab0-GettingStarted.md). You are going to use this IDE to create the Angular application.
 - Download and install NodeJS from https://nodejs.org/en/
 
-  You need this to be able to run `npm` commands. With this you can also manage the packagess of the project.
+  You need this to be able to run `npm` commands. With this you can also manage the packages of the project.
 
 - Install the Angular CLI:
 
@@ -35,26 +37,22 @@ You can now initiate Angular CLI commands by typing `ng <command>`
 ### 1. Create an Angular App with the Angular CLI
 
 ``` sh
-ng new angular-application
+ng new RetroGamingSPA
 ```
+This will create an Angular application with the newest version of Angular. When asked choose the following options:
 
-This will create an Angular application with the newest version of Angular.
-
-Do the following setup:
-
-1. Would you like to add Angular routing?: **(y)es**
+1. Would you like to add Angular routing?: **Yes**
 2. Which stylesheet format would you like to use?: **SCSS**
 
-  Sass and Less are also valid options, because they are also CSS Pre-processors. They provide a structured way of writing styles and which compiles to CSS. The Pre-processors do basically the same with some minor differences.
+   Sass and Less are also valid options, because they are also CSS Pre-processors. They provide a structured way of writing styles and which compiles to CSS. The Pre-processors do basically the same with some minor differences.
 
-### 2. Switch to angular-application application directory
+### 2. Switch to application directory
 
 ```sh
-cd ./angular-application
+cd ./RetroGamingSPA
 ```
 
 ### 3. Run the application
-
 The following command runs the Angular application:
 ```sh
 npm start
@@ -78,7 +76,6 @@ It uses the `package.json` file that contains the npm scripts. Examine the file 
     "e2e": "ng e2e"
   },
 ```
-
 Alternatively, you can run the application from the command-line using 
 ```sh
 ng serve
@@ -105,7 +102,6 @@ ng add @angular/material
 ### 2. Import Material Design Modules in your AppModule
 
 Create a new Module to include all your Material Design Modules:
-
 ```sh
 ng g module AppMaterial --flat=true
 
@@ -113,7 +109,7 @@ ng g module AppMaterial --flat=true
 # --flat creates the module file without a directory
 ```
 
-The above command generates a module named `AppMaterialModule` in the file `app/app-material.module.ts`
+The above command generates a module named `AppMaterialModule` in the file `src/app/app-material.module.ts`
 
 The reason for creating a separate module is because the amount of Material Modules can grow fast and pollutes the `app.module.ts` file. Replace the module's content with the following Material Modules which you are going to use throughout the application:
 
@@ -166,6 +162,7 @@ Next, import the `AppMaterialModule` in your AppModule file `./app/app.module.ts
 })
 export class AppModule {}
 ```
+Fix the import by pressing Ctrl+. in Visual Studio Code. Select the `Import` menu option that appears. You need to repeat this in other lab exercises.
 
 ### 3. Add Material theme to styles.scss
 
@@ -197,7 +194,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 ### 4. Replace boilerplate application content
-
 Replace all of the content in `./app/app.component.html` with the following:
 
 ```html
@@ -242,7 +238,7 @@ Add some styling to the app-component in file `./app/app.component.scss`
 ## Wrapup
 You have prepared your laptop and created an Angular application with Material Design which you are going to use in the next labs. Any issues you may have, can probably be resolved during the labs. Ask your fellow attendees or the proctor to help you, if you cannot solve the issues.
 
-Continue with [Lab 5 - Creating components](Lab6-CreatingComponents.md).
+Continue with [Lab 5 - Creating Angular components](Lab6-CreatingComponents.md).
 
 ## Reference material 
 - https://angular.io/docs

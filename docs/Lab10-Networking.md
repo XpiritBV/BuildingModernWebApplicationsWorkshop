@@ -1,4 +1,4 @@
-# Lab 4 - Networking
+# Lab 10 - Networking
 
 This lab will give you time to work with the various networking features of the Docker stack and implement a network design in your current application.
 
@@ -13,7 +13,6 @@ Goals for this lab:
 
 To start out, you are going to experiment a little with the networking stack of Docker.
 Run a couple of commands from the Docker CLI to investigate the existing networks:
-
 ```
 docker network ls
 ```
@@ -36,7 +35,7 @@ Read each of the JSON fragments. Pay special attention to the `Config` object in
 > Why are the config sections for networks `host` & `none` empty?
 > Which IP addresses will be assigned to the containers when they are inside a bridge network?
 
-Shut down any running compositions, by stopping your Visual Studio debugging session and any manually started containers of the demo application.
+Shut down any running compositions, by stopping your Visual Studio 2019 debugging session and any manually started containers of the demo application.
 
 ## <a name="create"></a>Create networks manually
 
@@ -79,12 +78,12 @@ You should be able to ping container `c3` from inside itself with `ping c3.conta
 
 The final step is to design your network topology and use the Docker Compose YAML files to specify the networks and aliases for the containers.
 
-Create a visual diagram for the three containers and draw assign them to two networks. The boundaries of these networks should be such that the web application can reach the web API, but not the SQL Server database. On the other hand, the Web API should be able to reach both the SQL Server database and the web application, but not from the same network.
+Create a visual diagram for the three containers and draw assign them to two networks. The boundaries of these networks should be such that the web application can reach the Web API, but not the SQL Server database. On the other hand, the Web API should be able to reach both the SQL Server database and the web application, but not from the same network.
 
 > ##### A choice of network type
 > What type of network drive should the two networks use? Remember that your are currently in a local, single-host situation. How would that change when running in a cluster?
 
-Give the two networks an appropriate name such as `frontend` and `backend`. Define the two networks in the `docker-compose.override.yml` file with:
+Give the two networks an appropriate name such as `frontend` and `backend`. Define the two networks at the end of the `docker-compose.override.yml` file with:
 
 ```yaml
 networks:
@@ -94,11 +93,15 @@ networks:
     driver: bridge
 ```
 
-Assign the container service definitions to the networks from your diagram. You can do this by adding a `network` section to the corresponding service like so:
+Assign the container service definitions to the networks from your diagram. You can do this by adding a `network` section to the Web API service like so:
 
 ```yaml
-    networks:
-      - frontend
+volumes:
+  - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+  - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+# Add lines below
+networks:
+  - backend
 ```
 
 Finish all changes and test your new network topology for the container composition. Run a couple of commands from the Docker CLI to list and inspect the new networks. Verify that your containers are running in the respective networks and that they have the correct IP addresses. As a reminder, some commands that might help here:
@@ -111,19 +114,18 @@ docker exec -it <containerid> sh
 
 The last command will give a bash from the container instance whose ID you specified. Run a command `ip a` and check how many ethernet adapters are listed. Verify that it corresponds with your design.
 
-You can also give a container instance an alias, so you can refer to it by a network alias instead of its container service name. Use the fragment below to give the SQL Server instance created in the [previous module](https://github.com/XpiritBV/ContainerWorkshop2018Docs/blob/master/Lab3-DockerizingNETCore.md#running-sql-server-in-a-docker-container) a network alias `sql.containerworkshop.local`.
+You can also give a container instance an alias, so you can refer to it by a network alias instead of its container service name. Use the fragment below to give the SQL Server instance created in the [previous lab](Lab9-DockerizingNETCore.md#sql) a network alias `sqlserver.retrogaming.local`.
 
 ```yaml
-    networks:
-      backend:
-        aliases:
-          - sql.containerworkshop.local
+networks:
+  backend:
+    aliases:
+      - sqlserver.retrogaming.local
 ```
-## Coming from Lab 3
-Did you work on Lab 3 before this? If so, after defining this alias, change the connection string setting of the `LeaderboardContext` for the Web API to use this new network name.
+## Coming from Lab 9
+Did you work on Lab 9 before this? If so, after defining this alias, change the connection string setting of the `RetroGamingContext` for the Web API to use this new network name.
 
 ## Wrapup
-
 In this lab you experimented with networks in Docker from the command line and later with definitions in compositions. You applied network segmentation to separate the container instances from each other, to improve network security.
 
-Continue with [Lab 5 - Environments](Lab5-Environments.md).
+Continue with [Lab 11 - Environments](Lab11-Environments.md).

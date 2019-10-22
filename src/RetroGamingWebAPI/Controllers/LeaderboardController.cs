@@ -56,7 +56,7 @@ namespace RetroGamingWebAPI.Controllers
         [ProducesResponseType(typeof(IEnumerable<HighScore>), 200)]
         [HttpGet("{format?}")]
         [FormatFilter]
-        [Produces("application/json")]
+        [Produces("application/json", "application/xml")]
         [MapToApiVersion("2.0")]
         public async Task<ActionResult<IEnumerable<HighScore>>> GetV2(int limit)
         {

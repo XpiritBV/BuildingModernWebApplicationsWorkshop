@@ -23,9 +23,9 @@ git checkout start
 > Make sure you have configured 'Docker Desktop' to run Linux containers.
 > If your VS2019 debugger won't start and attach, reset 'Docker Desktop' to its factory defaults and recreate network shares by using the settings screen.
 
-Open the solution `BuildingModernWebApplications.sln` in Visual Studio. Take your time to navigate the code and familiarize yourself with the web API project in the solution if you haven't built that yourself in the previous labs. You should be able to identify:
-- ASP.NET Core Web API `RetroGamingWebApi` 
-- Angular frontend project
+Open the solution `BuildingModernWebApplications.sln` in Visual Studio 2019. Take your time to navigate the code and familiarize yourself with the web API project and Angular SPA in the solution if you haven't built that yourself in the previous labs. You should be able to identify:
+- ASP.NET Core Web API `RetroGamingWebAPI` 
+- Angular frontend website project `RetroGamingSPA`
 
 ## Switching to SQL Server 
 
@@ -86,10 +86,9 @@ Right-click the RetroGamingWebAPI and start to debug a new instance. Navigate to
 Make sure you know how this application is implemented. Set breakpoints if necessary and navigate the flow of the application for the home page.
 
 ## <a name="add"></a>Add Docker support
+Visual Studio 2019 offers tooling for adding support to run your application in a Docker container. You will first add container support to the Web API project.
 
-Visual Studio offers tooling for adding support to run your application in a Docker container. You will first add container support to the Web API project.
-
-To get started you can right-click the LeaderboardWebApi project and select Add, Container Orchestrator Support from the context menu. Choose `Docker Compose` as the local orchestrator from the dropdown.
+To get started you can right-click the RetroGamingWebApi project and select Add, Container Orchestrator Support from the context menu. Choose `Docker Compose` as the local orchestrator from the dropdown.
 
 <img src="images/AddContainerOrchestratorSupport.PNG" width="400" />
 
@@ -97,115 +96,165 @@ In the next dialog, choose `Linux` as the target operating system.
 
 <img src="images/AddDockerSupportTargetOS.png" width="400" />
 
-Observe the changes that Visual Studio makes to your solution.  
+Observe the changes that Visual Studio 2019 makes to your solution.
 
-Most noticeably you will see that a new Docker Compose project has been added with the name `docker-compose`. It is now your start project for the solution. *(If it's not, make sure to configure it as the startup project.)*
+First of all, the Web API project has a new file named `Dockerfile`, that uses stages to build your application. Take a look at the file in your Web API project:
+```docker
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
 
-Inspect the contents of the `docker-compose.yml` and `docker-compose.override.yml` files if you haven't already. The compose file specifies which services (containers), volumes (data) and networks (connectivity) need to be created and run. The `override` file is used for local debugging purposes. Ensure that you understand the meaning of the various entries in the YAML files.
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
+WORKDIR /src
+COPY ["RetroGamingWebAPI/RetroGamingWebAPI.csproj", "RetroGamingWebAPI/"]
+RUN dotnet restore "RetroGamingWebAPI/RetroGamingWebAPI.csproj"
+COPY . .
+WORKDIR "/src/RetroGamingWebAPI"
+RUN dotnet build "RetroGamingWebAPI.csproj" -c Release -o /app/build
 
-Repeat adding Docker support for the Web application project. More changes will be made to the YAML files.
+FROM build AS publish
+RUN dotnet publish "RetroGamingWebAPI.csproj" -c Release -o /app/publish
 
-Run your application again. Which projects are effectively started? If some project is not running, start it by choosing `Debug` > `Start new instance` from the right-click context menu of the project.
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "RetroGamingWebAPI.dll"]
+```
 
-> If you encounter the error 'The DOCKER_REGISTRY variable is not set. Defaulting to a blank string.', make sure you started Visual Studio as an administrator
+This file creates a clean base image, that is based on the runtime only. The next stage uses an image with the SDK to build the application. It publishes the build and in the final stage it uses the `COPY --from` syntax to only use the putput of the previous stage in your clean base image. [Read more about multi-stage builds here](https://docs.docker.com/develop/develop-images/multistage-build/)
 
-> Does the application still work?
+Most noticeably you will see that there is also a new Docker Compose project with the name `docker-compose` has been added. It is now your start project for the solution. *(If it's not, make sure to configure it as the startup project.)*
 
-Now that the projects are running from a Docker container, the application is not working anymore. You can try to find what is causing the issue, but do not spend too much time to try to fix it. We will do that next.
+Compositions are essential to manage the many different combinations of containers, images, run-time details and environmental settings. Typically an application consists of multiple running containers. Managing each of these individually is both difficult and labor intensive. Moreover, it does not define the relationships and dependencies that exist.
 
-> Some things to try if you feel like finding the cause:
-> - Inspect the running and stopped containers
-> - Try to reach the Web API from http://localhost:44369/openapi.
-> - Debug the call from the web page to the API by stepping through the code.
-> - Verify application settings for each of the projects. 
+Docker Compose is the tool of choice for this lab to manage compositions of containers in your development environment. It allows you to use a command-line interface, similar to the Docker CLI, to interact with compositions defined in a `docker-compose.yml` file. There are other tools that allow the creation of compositions, such as the YAML files for Kubernetes. You will use Docker Compose in this lab.
 
-Notice how the `docker-compose.override.yml` file contains some port mappings, defining the ports inside the container and the composition and outside of it:
+## <a name="work"></a>Working with compositions and Docker Compose
+
+To become familiar with Docker Compose and using `docker-compose.exe`, you will first start a container based on a YAML file to compile your code and build container images. Create a file named `docker-compose.ci.build.yml` in the root of your solution and add the following content to it:
+```yaml
+version: '3.6'
+
+services:
+  ci-build:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.0
+    volumes:
+      - .:/src
+    working_dir: /src
+    command: /bin/bash -c "dotnet restore ./BuildingModernWebApplications.sln && dotnet publish ./BuildingModernWebApplications.sln -c Release -o ./obj/Docker/publish"
+```
+
+The definitions in the compose file describe a service called `ci-build` that uses the image `mcr.microsoft.com/dotnet/core/sdk:3.0` and has a volume mapping to the root of the source code. The command starts a build in the working directory `src` inside the container.
+
+Start this composition by executing the command from the root of the Visual Studio solution where the Docker Compose YAML files are located:
+
+```cmd
+docker-compose -f docker-compose.ci.build.yml up
+```
+
+The command will 'up' (meaning 'start') the composition and perform a build and publish of the project in the solution `BuildingModernWebApplications`.
+
+You could use this composition in your build pipeline to perform the build and publishing of the binaries required to create the container images of the solution.
+
+## Docker Compose in Visual Studio 2019
+The tooling support of Visual Studio 2019 for Docker and Docker Compose takes care of compiling the sources and building images for you. You do not need a build file like you have just used.
+
+You can still use `docker-compose.exe` to start the composition by hand:
+```cmd
+docker-compose -f docker-compose.yml -f docker-compose.override.yml up
+```
+or simply 
+```cmd
+docker-compose up
+```
+as the tooling assumes that your files are named `docker-compose.yml` and `docker-compose.override.yml` respe
+
+Inspect the contents of the `docker-compose.yml` and `docker-compose.override.yml` files if you haven't already. The compose file specifies which services (containers), volumes (data) and networks (connectivity) need to be created and run. The `override` file is used for local hosting and debugging purposes. Ensure that you understand the meaning of the various entries in the YAML files.
+
+Notice how the `docker-compose.override.yml` file contains some port mappings, defining the ports inside the container and the composition and outside of it. Your actual port numbers are most likely different:
 ```
 ports:
   - "14069:80"
   - "44325:443"
 ```
+This implies that the URLs for your Web API will not be 5000 and 5001 anymore, but the ones listed in the override file instead.
 
-> You will learn more on networking later on. For now, notice that the URL is not referring to `localhost` but `leaderboardwebapi` (the name of the Docker container service as defined in the `docker-compose.yml` file).
+Run your solution and navigate to the `api/v1/leaderboard` endpoint. 
 
-Change the `LeaderboardWebApiBaseUrl` setting to point to the new endpoint of the Web API with the internal address `http://leaderboard.webapi`.
+> If you encounter the error 'The DOCKER_REGISTRY variable is not set. Defaulting to a blank string.', make sure you started Visual Studio as an administrator
 
-> Make sure you use the HTTP endpoint, because hosting an HTTPS endpoint with self-signed certificates in a cluster does not work by default.
+> ### Question
+> 
+> Does the application still work?
 
-Choose the right place to make that change, considering that you are now running from Docker containers.
-  
-> ##### Hint
-> Changing the setting in the `appsettings.json` file will work and you could choose to do so for now. It does mean that the setting for running without container will not work anymore. So, what other place can you think of that might work? Use that instead if you know, or just change `appsettings.json`.
+Now that the Web API project is running from a Docker container, it is not working anymore. You can try to find what is causing the issue, but do not spend too much time to try to fix it. We will do that next.
 
-```
-gamingwebapp:
-  environment:
-    - ASPNETCORE_ENVIRONMENT=Development
-    - LeaderboardApiOptions:BaseUrl=http://leaderboardwebapi
-```
-
-Change the IP address of the connection string in the application settings for the Web API to be your local IP address (of your LAN) instead of `127.0.0.1`. This is a temporary fix.
-
-Start the solution by pressing `F5`. See if it works correctly. Timebox your efforts to try to fix any errors.
+> Some things to try if you feel like finding the cause:
+> - Inspect the running and stopped container
+> - Try to reach the Web API from http://localhost:44325/openapi. Remember to replace the port number with your specific one.
+> - Verify application settings for the web API project. 
 
 ## <a name="sql"></a>Running SQL Server in a Docker container
 
-Now that your application is running two projects in Docker containers, you can also run SQL Server in the same composition. This is convenient for isolated development and testing purposes. It eliminates the need to install SQL Server locally and to start the container for SQL Server manually.
+Now that your application is running the Web API project in a Docker container, you can also run SQL Server in the same composition. This is convenient for isolated development and testing purposes. It eliminates the need to install SQL Server locally and to start the container for SQL Server manually.
 
-Go ahead and add the definition for a container service in the `docker-compose.yml` file.
+Go ahead and add the definition for a container service in the `docker-compose.override.yml` file.
 
-```
-  sql.data:
-    image: mcr.microsoft.com/mssql/server
+```yaml
+sqlserver:
+  image: mcr.microsoft.com/mssql/server
+  environment:
+    - SA_PASSWORD=Pass@word
+    - MSSQL_PID=Developer
+    - ACCEPT_EULA=Y
+  ports:
+    - "5433:1433"
 ```
 
 Remember that from the Docker CLI you used many environment variables to bootstrap the container instance. Go back to the previous lab to check what these are.
 
-The new container service also requires these same environment variables. Add them to the `docker-compose.override.yml` file under an entry for sql.data.
-
-```
-  sql.data:
-    environment:
-      - SA_PASSWORD=Pass@word
-      - MSSQL_PID=Developer
-      - ACCEPT_EULA=Y
-    ports:
-      - "1433:1433"
-```
-
 > ##### Which additional changes are needed?
 > Stop and think about any other changes that might be required to take into account that the database server is now also running in a container.
 
+Start the solution by pressing `F5`. See if it works correctly. Timebox your efforts to try to fix any errors.
+
+As it turns out your connection string to the database is no longer valid. When running inside the composition, services such as the Web API and SQL Server instance are resolved by their internal name. Special addresses like 127.0.0.1, localhost or your machine name have a different meaning and do not resolve correctly. 
+
+> ##### Hint
+> Changing the setting in the `appsettings.json` file will work and you could choose to do so for now. It does mean that the setting for running without container will not work anymore. So, what other place can you think of that might work?
+
 You will need to change the connection string for the Web API to reflect the new way of hosting of the database. Add a new environment variable for the connection string of the leaderboard.webapi service in the `docker-compose.override.yml` file:
 
-```
-- ConnectionStrings:LeaderboardContext=Server=sql.data;Database=Leaderboard;User Id=sa;Password=Pass@word;Trusted_Connection=False
+```yaml
+- ConnectionStrings__RetroGamingContext=Server=tcp:sqlserver;Database=RetroGaming2048;User Id=sa;Password=Pass@word;Trusted_Connection=False;
 ```
 
 > ##### Strange connection string or not? 
-> There are at least two remarkable things in this connection string. Can you spot them and explain why? Don't worry if not, as we will look at this in the [Networking](Lab4-Networking.md) lab.
+> There are at least two remarkable things in this connection string. Can you spot them and explain why? Don't worry if not, as we will look at this in the [Networking lab](Lab10-Networking.md).
  
-With this change, you should be able to run your application completely from containers. Make sure you have stopped any containers related to the application. Give it a try and fix any issues that occur. 
+With this change, you should be able to run your Web API completely from containers. Make sure you have stopped any containers related to the application. Give it a try and fix any issues that occur. 
 
 ## <a name="debug"></a>Debugging with Docker container instances
-One of the nicest features of the Docker support in Visual Studio is the debugging support while running container instances. Check out how easy debugging is by stepping through the application like before.
+One of the nicest features of the Docker support in Visual Studio 2019 is the debugging support while running container instances. Check out how easy debugging is by stepping through the application like before.
 
-Put a breakpoint at the first statement of the `OnGetAsync` method in the `IndexModel` class in the `GamingWebApp` project. Add another breakpoint in the `Get` method of the LeaderboardController in the Web API project.
-Run the application by pressing F5. You should be hitting the breakpoints and jump from one container instance to the other.
+Put a breakpoint at the first statement of the `Get` method in the `LeaderboardController` class in the `RetroGamingWebAPI` project. Run the application by pressing F5. You should be hitting the breakpoint.
 
 ## <a name="build"></a>Building container images
-Start a command prompt and use the Docker CLI to check which container instances are running at the moment. There should be three containers related to the application:
-- SQL Server in `sqldocker`.
-- SQL Server in `dockercompose<id>_gamingwebapp_1`.
-- Web application in `dockercompose<id>_gamingwebapp_1`.
-- Web API in `dockercompose<id>_leaderboard.webapi_1`.
+Start a command prompt and use the Docker CLI to check which container instances are running at the moment. 
+```cmd
+docker ps 
+```
+There should be two containers related to the application:
+- SQL Server in `dockercompose<id>_sqlserver_1`.
+- Web API in `dockercompose<id>_retrogamingwebapi_1`.
 
 where `<id>` is a random unique integer value.
 
 > ##### New container images
 > Which new container images are on your system at the moment? Check your images list with the Docker CLI.
 
-Stop your application if necessary. Verify that any container instances of the Web application or Web API are actually stopped. If not, stop them by executing the following command for each of the container instances:
+Stop your application if necessary. Verify that any container instances are actually stopped. If not, stop them by executing the following command for each of the container instances:
 
 ```
 docker kill <container-id>
@@ -218,7 +267,7 @@ docker kill <container-id>
 Now, try and run the Web application image yourself. Start a container instance.
 
 ```cmd
-docker run -p 8080:80 -it --name webapp gamingwebapp:dev
+docker run -p 8080:80 -it --name webapi retrogamingwebapi:dev
 ```
 
 Check whether the web application is working. It shouldn't work and you'll find that it brings you in a bash shell on Linux.
@@ -227,10 +276,10 @@ Check whether the web application is working. It shouldn't work and you'll find 
 root@65e40486ab0f:/app#
 ```
 
-Your container image does not contain any of the binaries that make your ASP.NET Core Web application run. Visual Studio uses volume mapping to map the files on your file system into the running container, so it can detect any changes thereby allowing small edits during debug sessions.
+Your container image does not contain any of the binaries that make your ASP.NET Core Web API run. Visual Studio 2019 uses volume mapping to map the files on your file system into the running container, so it can detect any changes thereby allowing small edits during debug sessions.
 
-> ##### Debug images from Visual Studio
-> Remember that Visual Studio creates Debug images that do not work when run from the Docker CLI.
+> ##### Debug images from Visual Studio 2019
+> Remember that Visual Studio 2019 creates Debug images that do not work when run from the Docker CLI.
 
 > ##### Asking for help
 > Remember that you can ask your proctor for help. Also, working with fellow attendees is highly recommended, as it can be fun and might be faster. Of course, you are free to offer help when asked.
@@ -238,4 +287,4 @@ Your container image does not contain any of the binaries that make your ASP.NET
 ## Wrapup
 In this lab you have added Docker support to run both of your projects from Docker containers as well as the SQL Server instance. You enhanced the Docker Compose file that describes the composition of your complete application. In the next lab you will improve the networking part of the composition.
 
-Continue with [Lab 4 - Networking](Lab4-Networking.md).
+Continue with [Lab 10 - Networking](Lab10-Networking.md).

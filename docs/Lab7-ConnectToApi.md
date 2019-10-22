@@ -1,6 +1,6 @@
-# Lab 7 - Connect to the API
+# Lab 7 - Consuming a REST Web API from Angular
 
-In this lab you will use the components you have created and connect them to the .NET Core API. You will learn about generating an OpenAPI client inside your Angular application and using it to GET and POST.
+In this lab you will use the components you have created and connect them to the .NET Core API. You will learn about generating an OpenAPI client inside your Angular application and using it to make `GET` and `POST` requests.
 
 Goals for this lab:
 
@@ -8,26 +8,23 @@ Goals for this lab:
 - [Getting high scores from the API](#inspect)
 - [Posting scores to the API](#inspect)
 
-## Generating an OpenAPI client
+## <a name="inspect"></a>Generating an OpenAPI client
 
 ### 1. Install swagger-codegen tool
-
 Install `ng-openapi-gen` to generate services and models based on your .NET Core API.
-
 ```sh
 npm install -g ng-openapi-gen
 ```
 
 ### 2. Generate a client inside your Angular application
-
+The next step is to use the OpenAPI generator to create a client based on our OpenAPI definition. Make sure you are running your Web API. Run the following command from the terminal window:
 ```sh
-cd ./angular-application
-
 #//TODO correct localhost port
 ng-openapi-gen --input http://localhost:5000/openapi/v1.json --output src/app/shared/api/leaderboards-api
 ```
+You are using the HTTP endpoint, because the self-signed certificate for the HTTPS endpoint will give errors. The OpenAPI document will stay the same regardless of the protocol you use.
 
-The above command generated your .Net Core API definition to the following directory: `./angular-application/src/app/shared/api/leaderboards-api/*`
+The above command generated your .NET Core API definition to the following directory: `./src/app/shared/api/leaderboards-api/`
 
 The most important files you want to look at are:
 - `../leaderboards-api/services/` contain the http calls to get high scores and post scores.
@@ -35,9 +32,7 @@ The most important files you want to look at are:
 - `../leaderboards-api/api.module.ts` contains the `ApiModule` which you are going to import in the `AppModule`
 
 ## 3. Import the ApiModule
-
-Import the `ApiModule` and `HttpClientModule` in the AppModule in file `./angular-application/src/app/app.module.ts`
-
+Import the `ApiModule` and `HttpClientModule` in the AppModule in file `./src/app/app.module.ts`:
 ```ts
 @NgModule({
   declarations: [
@@ -58,52 +53,21 @@ Import the `ApiModule` and `HttpClientModule` in the AppModule in file `./angula
 export class AppModule { }
 ```
 
-`.forRoot()` is used when a module is "eager," that is, it is not lazy-loaded (loads when the application starts).
-
-`rootUrl` is the url to the Leaderboards API
+- `.forRoot()` is used when a module is "eager". This means it is loaded when the application starts instead of being lazy-loaded when needed.
+- `rootUrl` is the URL to the Leaderboards API.
 
 ### 4. Remove the old high-score.ts model and fix imports to new api model
 
-In the previous lab you have created a high-score.ts. You can now safely remove it, because of the automatically generated model from the OpenAPI client generator. 
+In the previous lab you have created a high-score.ts. You can now safely remove it, because the automatically generated model from the OpenAPI client generator provides a similar interface. 
 
-1. Remove file: `./angular-application/src/app/shared/models/high-score.ts`
-2. Fix imports to the new high-score model: `./angular-application/src/app/shared/api/leaderboards-api/models/high-score.ts`
-
-
-### 5. TODO: CORS ISSUES & OpenAPI V1 and V2 get issue
-
-```cs
-// Fix commenting out GetV2 in LeaderboardsController
-
-
-// Fix in Startup.CS
-readonly string MyAllowSpecificOrigins = "_myAllowAllCors";
-
- services.AddCors(options =>
-            {
-                options.AddPolicy(MyAllowLocalhostSpecificOrigins,
-                    builder =>
-                    {
-                        builder
-                            .AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
-                    });
-            });
-
-// ....
-
-app.UseCors(MyAllowSpecificOrigins);        
-```
+1. Remove file: `./src/app/shared/models/high-score.ts`
+2. Fix imports in existing components to switch to the new high-score model (which is located in `./src/app/shared/api/leaderboards-api/models/high-score.ts`).
 
 ## Getting high scores from the API
-
-In this chapter you will get high scores from the OpenAPI client you created in previous chapter.
+You will get high scores from the OpenAPI client you created in previous exercise.
 
 ### 1. Replace code of the high-scores component
-
-Replace the contents of `./angular-application/src/app/high-scores/high-scores.component.ts`
-
+Edit the contents of `./src/app/high-scores/high-scores.component.ts` to match:
 ```ts
 export class HighScoresComponent implements OnInit {
   public highScores: HighScore[] = [];
@@ -112,7 +76,7 @@ export class HighScoresComponent implements OnInit {
   constructor(private readonly leaderBoardsService: LeaderboardService) {}
   /* #end# */
 
-  /* Subscribe to the Get Observable and add the result to the high scores array */
+  /* Subscribe to the Get observable and add the result to the high scores array */
   ngOnInit() {
     this.getHighScores()
       .subscribe(result => {
@@ -138,21 +102,19 @@ export class HighScoresComponent implements OnInit {
 }
 ```
 
-`Observable` is a concept of RxJS. You first setup a request. Only after calling `.subscribe()` the request is executed.
+`Observable` is a concept of RxJS. It has a reactive approach, where you setup a subscription to the completion of the web request. The handler function representing this subscription is only executed when the call is actually made and completed.
 
 > **Pro tip**
 > 
-> RxJS is very interesting and could have its own workshop. If you want to know more about RxJS visit:
+> RxJS is very interesting and deserves its own workshop. If you want to know more about RxJS visit:
 > - https://angular.io/guide/rx-library
 > - https://www.learnrxjs.io/
 
 ## Posting scores to the API
-
-In this chapter you will post scores to the API and refresh the the high scores when a new score is posted.
+Next, you will post scores to the API and refresh the high scores when a new score is posted.
 
 ### 1. Post a score to the API
-
-Post form values of add score component in file: `./angular-application/src/app/add-score.component.ts`
+Using the OpenAPI generated client you can post the form values of the `AddScoreComponent`. Make the following changes in the file `./src/app/add-score.component.ts`.
 
 ```ts
 export class AddScoreComponent implements OnInit {
@@ -191,9 +153,7 @@ export class AddScoreComponent implements OnInit {
 }
 ```
 
-`subscribe()` the request needs to be subscribed to in order to execute the post.
-
-
+The HTML of the component also needs some tweaking in order to show that the score has been submitted.
 ```html
 <!-- Add *ngIf="!isScorePosted" to <form> -->
 <form class="add-score-form" [formGroup]="addScoreForm" *ngIf="!isScorePosted">
@@ -202,14 +162,16 @@ export class AddScoreComponent implements OnInit {
 
 <!-- Add the following <div> below the <form> -->
 <div *ngIf="isScorePosted">
-  <h1>Thank you for adding your score!</h1>
-  <a [routerLink]="['/']">Go back to view high scores</a>
+  <h1>Thank you for submitting your score!</h1>
+  <p>Go back to check if you made it in the list of all time high scores</p> <a mat-button color="primary" [routerLink]="['/']">List of Retro Game high scores</a>
 </div>
 <!-- #end -->
 ```
 
-with `*ngIf` you can hide and show content dynamically. This renders and removes components, instead of only the visibility.
-After posting the score you should now see a thank you message and the option to go back.
+With `*ngIf` you can hide and show content dynamically. This renders and removes components, instead of only the visibility.
+After posting the score you should now see a "Thank you" message and the option to go back to the list of high scores.
 
 ## Wrap up
-In this lab you have created an http client based on the OpenAPI configuration of the .NET Core API. You made a get requests to get high scores and a post request to post new scores.
+In this lab you have created an HTTP client based on the OpenAPI configuration of the .NET Core API. You made a `GET` request to retrieve the list of high scores and a `POST` request to post new scores for your list.
+
+Continue with [Lab 8 - Docker 101](Lab8-Docker101.md).

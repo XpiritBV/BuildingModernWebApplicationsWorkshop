@@ -85,9 +85,6 @@ rcf/
 # but keep track of directories ending in .cache
 !*.[Cc]ache/
 
-#Ignore marker-file used to know which docker files we have.
-.dotnextgaming_*
-
 istio-1.2.5/
 .vscode/settings.json
 

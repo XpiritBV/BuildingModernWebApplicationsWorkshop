@@ -369,12 +369,12 @@ private void ConfigureSecurity(IServiceCollection services)
             builder => builder.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader()
-            .AllowCredentials());
+         );
    });
 }
 ```
 
-Make sure the method is called from  `ConfigureServices` inside the `Startup.cs` class, passing the `IServiceCollection`.
+Make sure the method is called from  `ConfigureServices` inside the `Startup.cs` class, passing the `services` variable.
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
