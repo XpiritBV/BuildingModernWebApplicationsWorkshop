@@ -1,4 +1,4 @@
-# Lab 4 - Real world web APIs
+# Lab 4 - Real world Web APIs
 
 In this lab you will make your web API more realistic and introduce several pieces of functionality and characteristics typical for a REST API. This includes the ability to do content negotiation, XML support and having an OpenAPI document to describe the service and a Cross-Origin Resource Sharing security policies.
 

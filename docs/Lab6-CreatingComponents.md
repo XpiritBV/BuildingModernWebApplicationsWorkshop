@@ -132,8 +132,6 @@ export interface HighScore {
 
 The next step is to have the high scores list component receive input to be displayed. 
 
-TODO: verify location
-
 Replace the following TypeScript snippet in `./src/app/high-scores/high-scores-list/high-scores-list.component.ts`:
 ```ts
 @Component({
@@ -434,4 +432,4 @@ Also make the following changes to the HTML in file `./src/app/add-score/add-sco
 ## Wrap up
 In this lab you have created components and navigated to them using the Angular Router. You used Material components to enhance your application and Angular Reactive Forms to get data from your form. In the next lab you will connect the components to the .NET Core API created in the earlier Labs.
 
-Continue with [Lab 7 - Consuming a REST Web API from Angular](Lab7-ConnectToAPI.md).
+Continue with [Lab 7 - Consuming a REST Web API from Angular](Lab7-ConnectToApi.md).

@@ -25,15 +25,6 @@ Next, create a new folder for your entire solution. This can be any folder, e.g.
 git init
 dotnet new gitignore
 ``` 
-If you are using Visual Studio Code you can add this to the `.gitignore` file:
-```git
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.code-workspace
-``` 
 
 To get started building the Web API, you are going to use the templating engine of the ASP.NET Core SDK to scaffold a new solution file for Visual Studio 2019:
 ```sh
@@ -59,7 +50,7 @@ Stop the application by pressing Ctrl+C.
 
 Open your new solution `BuildingModernWebApplications.sln` in Visual Studio 2019 or Code and examine the files that are in the project. 
 
-Pay extra attention to the `Program.cs` file which contais the .NET Core 3.0 application bootstrapping using the new `Host` class.
+Pay extra attention to the `Program.cs` file which contains the .NET Core 3.0 application bootstrapping using the new `Host` class.
 
 In the `Startup.cs` file add a constructor that has an `IConfiguration` and `IHostEnvironment` parameter and store these in read-only properties. First, import the configuration library.
 ```c#
@@ -156,11 +147,14 @@ The Retro Gaming leaderboard Web API must return a list of high scores when maki
 >     - HighScore.cs
 
 ```c#
-public class HighScore
+namespace RetroGamingWebAPI.Models
 {
-   public string Game { get; set; }
-   public string Nickname { get; set; }
-   public int Points { get; set; }
+   public class HighScore
+   {
+      public string Game { get; set; }
+      public string Nickname { get; set; }
+      public int Points { get; set; }
+   }
 }
 ```
 Later on the high scores are retrieved from a database. For now, you will use some hardcoded fake high scores. In the `LeaderboardController.cs` class, add a field for this list of high scores and initialize the list in the constructor. Feel free to add your own imaginary scores to the list:
@@ -192,4 +186,4 @@ Try the new method by navigating to the leaderboard endpoint https://localhost:5
 ## Wrapup
 You have just enhanced your initially empty web API with some basic functionality and tested it. The next steps will be to add some real world functionality, including Entity Framework Core Object relational mapping, XML support, content negotiation, OpenAPI documentation, versioning and CORS security.
 
-Continue with [Lab 3 - Entity Framework](Lab3-EntityFrameworkCore.md).
+Continue with [Lab 3 - Entity Framework Core and Dependency Injection](Lab3-EntityFrameworkCore.md).
