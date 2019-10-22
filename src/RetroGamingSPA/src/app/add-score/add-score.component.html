@@ -1,0 +1,30 @@
+<form class="add-score-form" [formGroup]="addScoreForm" *ngIf="!isScorePosted">
+    <mat-form-field class="input-nickname">
+        <input matInput formControlName="nickname" required placeholder="Nickname" />
+    </mat-form-field>
+
+    <mat-form-field class="input-game">
+        <mat-label>Games</mat-label>
+        <mat-select formControlName="game">
+            <mat-option value="Pacman">Pac-Man</mat-option>
+            <mat-option value="Space Invaders">Space Invaders</mat-option>
+            <mat-option value="Donkey Kong">Donkey Kong</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput formControlName="points" type="number" placeholder="Points" value="0" />
+    </mat-form-field>
+
+    <button class="form-button" (click)="submitScore()" mat-raised-button color="primary">
+        Submit Score
+    </button>
+    <p>
+        Form Status: {{ addScoreForm.status }}
+    </p>
+</form>
+<div *ngIf="isScorePosted">
+    <h1>Thank you for submitting your score!</h1>
+    <p>Go back to check if you made it in the list of all time high scores</p>
+    <a mat-button color="primary" [routerLink]="['/']">List of Retro Game high scores</a>
+</div>

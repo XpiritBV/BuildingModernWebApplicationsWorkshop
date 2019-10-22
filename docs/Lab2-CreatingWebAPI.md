@@ -42,7 +42,7 @@ dotnet new sln -n BuildingModernWebApplications
 Also create a new empty Web ASP.NET Core project, that will become the Web API. Add the project to the solution:
 ```sh
 dotnet new web -n RetroGamingWebAPI
-dotnet sln add './RetroGamingWebAPI/RetroGamingWebAPI.csproj'
+dotnet sln add RetroGamingWebAPI/RetroGamingWebAPI.csproj
 ``` 
 This should be enough to create a solution file for Visual Studio 2019 and a project that can run your Web API.
 Give it a try by building the solution and starting the project.
@@ -61,7 +61,7 @@ Open your new solution `BuildingModernWebApplications.sln` in Visual Studio 2019
 
 Pay extra attention to the `Program.cs` file which contais the .NET Core 3.0 application bootstrapping using the new `Host` class.
 
-In the `Startup.cs` file add a constructor that has an `IConfiguration` and `IHostEnvironment` parameter and store these in read-only properties. First import the configuration library.
+In the `Startup.cs` file add a constructor that has an `IConfiguration` and `IHostEnvironment` parameter and store these in read-only properties. First, import the configuration library.
 ```c#
 using Microsoft.Extensions.Configuration;
 ```

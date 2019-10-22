@@ -15,7 +15,7 @@ Make sure that your laptop is up-to-date with the latest security patches. This 
 ## <a name="2"></a>2. Download required and optional tooling
 First, you will need to have a development IDE installed. The most preferable IDE is [Visual Studio 2019](https://www.visualstudio.com/vs/) if you are running the Windows operating system.
 
-You should also install [Visual Studio Code](https://code.visualstudio.com/) for the Angulard labs and as an alternative to Visual Studio 2019 the following cases:
+You should also install [Visual Studio Code](https://code.visualstudio.com/) for the Angular labs and as an alternative to Visual Studio 2019 the following cases:
 - Your development machine is running OSX or a Linux distribution as your operating system.
 - You want to have an light-weight IDE or use an alternative to Visual Studio 2019.
 
@@ -38,6 +38,15 @@ The following optional tools are recommended, but not required.
 
 - [GitHub Desktop](https://desktop.github.com/) for Git Shell and Git repository utilities
 - [PuTTY](http://www.putty.org/) for `PuTTY.exe` and `PuTTYgen.exe`
+
+Download and install NodeJS from https://nodejs.org/en/
+
+You need this to be able to run `npm` commands. With this you can also manage the packages of the project.
+
+Install the Angular CLI by running this npm command from a console window:
+```sh
+npm install -g @angular/cli
+```
 
 ## <a name="3"></a>3. Clone Git repository for lab code
 The workshop uses an example to get you started with Dockerizing a typical ASP.NET Core application. 

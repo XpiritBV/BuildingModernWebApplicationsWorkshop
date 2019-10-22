@@ -64,6 +64,7 @@ namespace RetroGamingWebAPI
             });
 
             ConfigureVersioning(services);
+            ConfigureSecurity(services);
 
             services
                 .AddControllers(options => {
@@ -89,10 +90,23 @@ namespace RetroGamingWebAPI
             });
         }
 
+        private void ConfigureSecurity(IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                   builder => builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                );
+            });
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
             RetroGamingContext context)
         {
+            app.UseCors("CorsPolicy");
             app.UseOpenApi(config =>
             {
                 config.DocumentName = "v1";
