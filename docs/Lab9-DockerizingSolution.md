@@ -13,15 +13,13 @@ Goals for this lab:
 ## <a name="run"></a>Run existing application
 You will first start with running the existing ASP.NET Core Web API  from Visual Studio. Make sure you have cloned the Git repository, or return to [Lab 1 - Getting Started](Lab1-GettingStarted.md) to clone it now if you do not have the sources. Switch to the `StartDocker` branch by using this command:
 
-//TODO create the startDocker branch
-
 ```cmd
-git checkout startDocker
+git checkout StartDocker
 ```
 
 > ##### Important
 >
-> Make sure you have switched to the `startDocker` branch to use the right .NET solution. If you are still on the `master` branch, you will use the completed solution. 
+> Make sure you have switched to the `StartDocker` branch to use the right .NET solution. If you are still on the `master` branch, you will use the completed solution. 
 >
 > Also verify you have configured 'Docker Desktop' to run Linux containers.
 >
