@@ -156,11 +156,14 @@ The Retro Gaming leaderboard Web API must return a list of high scores when maki
 >     - HighScore.cs
 
 ```c#
-public class HighScore
+namespace RetroGamingWebAPI.Models
 {
-   public string Game { get; set; }
-   public string Nickname { get; set; }
-   public int Points { get; set; }
+   public class HighScore
+   {
+      public string Game { get; set; }
+      public string Nickname { get; set; }
+      public int Points { get; set; }
+   }
 }
 ```
 Later on the high scores are retrieved from a database. For now, you will use some hardcoded fake high scores. In the `LeaderboardController.cs` class, add a field for this list of high scores and initialize the list in the constructor. Feel free to add your own imaginary scores to the list:
