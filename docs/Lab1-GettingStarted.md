@@ -29,15 +29,11 @@ Second, you are going to need the Docker Desktop Community Edition tooling on yo
 > - [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/install/)
 > - [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/install/)
 
-You will also need the [Azure Command Line 2.0 tooling](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) for interaction with Azure resources. 
-> Install [Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest)
-
 Download and install [.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0) if needed.
 
 The following optional tools are recommended, but not required.
 
 - [GitHub Desktop](https://desktop.github.com/) for Git Shell and Git repository utilities
-- [PuTTY](http://www.putty.org/) for `PuTTY.exe` and `PuTTYgen.exe`
 
 Download and install NodeJS from https://nodejs.org/en/
 
@@ -73,72 +69,6 @@ docker pull mcr.microsoft.com/mssql/server
 docker pull mcr.microsoft.com/dotnet/core/runtime:3.0-buster-slim
 docker pull mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim
 ```
-
-## <a name="5"></a>5. (Optional) Create a Kubernetes cluster in Azure
-
-This part requires you have an active Azure subscription. If you do not, you can create a trial account at [Microsoft Azure](https://azure.microsoft.com/en-us/free/). It will require access to a credit card, even though it will not be charged.
-
-First, login to your Azure subscription using the Azure CLI and switch to the right subscription (in case you have multiple subscriptions). The second command will list your subscriptions. Choose the appropriate GUID to select the subscription you want to use and substitute that in the third command. 
-
-```
-az login
-az account list -o table
-az account set --subscription <your-subscription-guid>
-```
-
-After you have successfully logged in, create a resource group for your cluster.
-
-```
-az group create --location WestEurope --name Workshop
-```
-
-Install the Azure Kubernetes Service Command-Line Interface tools by running and following the instructions from this command:
-```
-az aks install-cli
-```
-Next, create a service principal to manage the Azure subscription. Store the information that is displayed after creation:
-
-```
-az ad sp create-for-rbac --name "WorkshopServicePrincipal" --skip-assignment
-```
-The result should look similar to this:
-
-``` json
-{
-  "appId": "71860f73-7e41-4863-afca-01acaaaa9cd4",
-  "displayName": "azure-cli-2019-5-26-15-25-53",
-  "name": "http://azure-cli-2019-5-26-15-25-53",
-  "password": "7ae238c0-1bdb-4df7-bf27-29091ed48dfa",
-  "tenant": "1b2bfa88-825c-4d4e-b258-5ae208c0aafa"
-}
-```
-
-You can create the cluster with the `az aks create` command. You need to tweak the command below to contain the specifics from the created service principal. You can also change the names of the cluster and DNS name prefix to your liking:
-```
-az aks create --resource-group Workshop --name WorkshopCluster 
-  --dns-name-prefix workshop 
-  --client-secret <your-principal-password> 
-  --service-principal <your-principal-appid> 
-  --generate-ssh-keys --location westeurope --node-count 3 
-  --kubernetes-version 1.13.5 --max-pods 100 
-  --enable-addons http_application_routing
-```
-
-After the cluster has been created, check whether it is up and running by opening the Kubernetes Dashboard:
-```
-az aks get-credentials --resource-group Workshop --name WorkshopCluster -a
-az aks browse --resource-group Workshop --name WorkshopCluster
-```
-
-You might get errors in the home page of Role Based Access Control (RBAC) is on by default for the latest version of AKS.
-For now, you will fix the RBAC access with by running the following command from the root folder of your cloned Git repository:
-```
-kubectl create -f dashboard-admin.yaml
-```
-
-If all is correct, the Kubernetes dashboard can be launched from your default browser without any errors now.
-
-This does not incur any costs other than your Azure resource consumption and should be fit easily within your Azure trial subscription credits.
 
 ## Wrapup
 You have prepared your laptop and cloud environment to be ready for the next labs. Any issues you may have, can probably be resolved during the labs. Ask your fellow attendees or the proctor to help you, if you cannot solve the issues.
