@@ -193,7 +193,7 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 ```
 
-The definitions in the `docker-compose.yml` file describe the build stage of the `retrogamingwebapi` service from a `Dockerfile`. The definitions in the `docker-compose.yml` describe the run stage of the service.
+The definitions in the `docker-compose.yml` file describe the build stage of the `retrogamingwebapi` service from a `Dockerfile`. The definitions in the `docker-compose.override.yml` describe the run stage of the service.
 
 Start the following composition command at the root `BuildingModernWebApplications` where the Docker Compose YAML files are located:
 
