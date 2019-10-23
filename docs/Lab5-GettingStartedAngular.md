@@ -19,6 +19,8 @@ If you already followed the instructions in [Lab 1 - Getting started](Lab1-Getti
 - Download and install NodeJS from https://nodejs.org/en/
 
   You need this to be able to run `npm` commands. With this you can also manage the packages of the project.
+  
+  If you've already installed node make sure that you are on version 10.9 or greater. 
 
 - Install the Angular CLI:
 
@@ -41,7 +43,7 @@ This will create an Angular application with the newest version of Angular. When
 1. Would you like to add Angular routing?: **Yes**
 2. Which stylesheet format would you like to use?: **SCSS**
 
-   Sass and Less are also valid options, because they are also CSS Pre-processors. They provide a structured way of writing styles and which compiles to CSS. The Pre-processors do basically the same with some minor differences.
+   Sass and Less are also valid options, because they are also CSS Pre-processors. They provide a structured way of writing styles which compile to CSS. The Pre-processors do basically the same with some minor differences.
 
 ### 2. Switch to application directory
 
@@ -235,7 +237,7 @@ Add some styling to the app-component in file `./src/app/app.component.scss`
 ## Wrapup
 You have prepared your laptop and created an Angular application with Material Design which you are going to use in the next labs. Any issues you may have, can probably be resolved during the labs. Ask your fellow attendees or the proctor to help you, if you cannot solve the issues.
 
-Continue with [Lab 5 - Creating Angular components](Lab6-CreatingComponents.md).
+Continue with [Lab 6 - Creating Angular components](Lab6-CreatingComponents.md).
 
 ## Reference material 
 - https://angular.io/docs
