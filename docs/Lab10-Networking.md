@@ -127,5 +127,3 @@ Did you work on Lab 9 before this? If so, after defining this alias, change the 
 
 ## Wrapup
 In this lab you experimented with networks in Docker from the command line and later with definitions in compositions. You applied network segmentation to separate the container instances from each other, to improve network security.
-
-Continue with [Lab 11 - Environments](Lab11-Environments.md).
