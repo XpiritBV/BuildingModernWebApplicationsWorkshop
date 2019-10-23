@@ -13,7 +13,7 @@ Goals for this lab:
 
 ### 1. Create a high scores component with the Angular CLI
 
-The following command will create a component. It is going to be used as your homepage:
+The following command will create a component. Which is going to be used as your homepage:
 ```sh
 ng generate component high-scores --module=app
 
