@@ -5,6 +5,7 @@ using RetroGamingWebAPI.Infrastructure;
 using RetroGamingWebAPI.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RetroGamingWebAPI.Controllers
@@ -34,17 +35,18 @@ namespace RetroGamingWebAPI.Controllers
         [FormatFilter]
         [Produces("application/json")]
         [MapToApiVersion("1.0")]
-        public async Task<ActionResult<IEnumerable<HighScore>>> Get()
+        public async Task<ActionResult<IEnumerable<HighScore>>> Get(CancellationToken cancellationToken)
         {
-            var scores = context.Scores
+            var scores = await context.Scores
                 .Select(score => new HighScore()
                 {
                     Game = score.Game,
                     Points = score.Points,
                     Nickname = score.Gamer.Nickname
-                });
+                })
+                .ToListAsync(cancellationToken);
 
-            return Ok(await scores.ToListAsync().ConfigureAwait(false));
+            return Ok(scores);
         }
 
         // GET api/leaderboard
@@ -58,17 +60,18 @@ namespace RetroGamingWebAPI.Controllers
         [FormatFilter]
         [Produces("application/json", "application/xml")]
         [MapToApiVersion("2.0")]
-        public async Task<ActionResult<IEnumerable<HighScore>>> GetV2(int limit)
+        public async Task<ActionResult<IEnumerable<HighScore>>> GetV2(int limit, CancellationToken cancellationToken)
         {
-            var scores = context.Scores
+            var scores = await context.Scores
                 .Select(score => new HighScore()
                 {
                     Game = score.Game,
                     Points = score.Points,
                     Nickname = score.Gamer.Nickname
-                }).Take(limit);
+                }).Take(limit)
+                .ToListAsync(cancellationToken);
 
-            return Ok(await scores.ToListAsync().ConfigureAwait(false));
+            return Ok(scores);
         }
     }
 }

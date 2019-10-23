@@ -1,22 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Net.Http.Headers;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RetroGamingWebAPI.Infrastructure;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using NSwag.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using NJsonSchema.Generation;
 using NSwag.Generation.Processors;
+using RetroGamingWebAPI.Infrastructure;
+using System;
 
 namespace RetroGamingWebAPI
 {
@@ -37,7 +32,7 @@ namespace RetroGamingWebAPI
         {
             services.AddDbContext<RetroGamingContext>(options =>
             {
-                string connectionString =
+                var connectionString =
                     Configuration.GetConnectionString("RetroGamingContext");
                 options.UseSqlServer(connectionString, sqlOptions =>
                 {
@@ -67,13 +62,15 @@ namespace RetroGamingWebAPI
             ConfigureSecurity(services);
 
             services
-                .AddControllers(options => {
+                .AddControllers(options =>
+                {
                     options.RespectBrowserAcceptHeader = true;
                     options.ReturnHttpNotAcceptable = true;
                     options.FormatterMappings.SetMediaTypeMappingForFormat("xml", new MediaTypeHeaderValue("application/xml"));
                     options.FormatterMappings.SetMediaTypeMappingForFormat("json", new MediaTypeHeaderValue("application/json"));
                 })
-                .AddNewtonsoftJson(setup => {
+                .AddNewtonsoftJson(setup =>
+                {
                     setup.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
                 .AddXmlSerializerFormatters();
@@ -120,14 +117,14 @@ namespace RetroGamingWebAPI
 
             if (env.IsDevelopment())
             {
-                DbInitializer.Initialize(context).Wait();
+                DbInitializer.Initialize(context);
                 app.UseStatusCodePages();
                 app.UseDeveloperExceptionPage();
                 app.UseSwaggerUi3(config =>
                 {
                     config.SwaggerRoutes.Add(new SwaggerUi3Route("v1", "/openapi/v1.json"));
                     config.SwaggerRoutes.Add(new SwaggerUi3Route("v2", "/openapi/v2.json"));
-                    
+
                     config.Path = "/openapi";
                     config.DocumentPath = "/openapi/v2.json";
                 });
