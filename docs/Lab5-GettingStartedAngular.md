@@ -19,6 +19,8 @@ If you already followed the instructions in [Lab 1 - Getting started](Lab1-Getti
 - Download and install NodeJS from https://nodejs.org/en/
 
   You need this to be able to run `npm` commands. With this you can also manage the packages of the project.
+  
+  If you've already installed node make sure that you are on version 10.9 or greater. 
 
 - Install the Angular CLI:
 
