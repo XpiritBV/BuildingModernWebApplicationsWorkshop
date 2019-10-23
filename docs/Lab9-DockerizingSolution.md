@@ -151,7 +151,7 @@ FROM nginx:alpine
 COPY --from=build /app/dist/* /usr/share/nginx/html/
 ```
 
-Try running the docker container from the `BuildingModernWebApplications` directory:
+Try running the docker container from the `BuildingModernWebApplications root` (where the `docker-compose.yml` is located) directory:
 ```sh
 docker build -t retrogamingspa:latest RetroGamingSPA/.
 docker run -p 4200:80 retrogamingspa:latest 
