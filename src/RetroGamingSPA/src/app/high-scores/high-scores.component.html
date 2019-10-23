@@ -1,1 +1,2 @@
-<app-high-scores-list [highScores]="highScores" (onHighScoreSelected)="onHighScoreSelected($event)"></app-high-scores-list>
+<app-high-scores-list [highScores]="highScores$ | async" (onHighScoreSelected)="onHighScoreSelected($event)">
+</app-high-scores-list>
