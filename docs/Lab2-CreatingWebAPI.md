@@ -48,7 +48,7 @@ Stop the application by pressing Ctrl+C.
 
 ## <a name="webapi"></a>Building a minimal Web API
 
-Open your new solution `BuildingModernWebApplications.sln` in Visual Studio 2019 or Code and examine the files that are in the project. 
+Open your new solution `BuildingModernWebApplications.sln` in Visual Studio 2019 or the folder your created in Visual Studio Code and examine the files that are in the project. 
 
 Pay extra attention to the `Program.cs` file which contains the .NET Core 3.0 application bootstrapping using the new `Host` class.
 
