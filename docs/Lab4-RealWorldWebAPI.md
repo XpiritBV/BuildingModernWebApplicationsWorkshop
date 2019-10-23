@@ -287,7 +287,7 @@ public void ConfigureServices(IServiceCollection services)
 
    services
       .AddControllers(options => { /* ... */ })
-      .AddXmlSerializerFormatters();   
+      .AddXmlSerializerFormatters()  
       .AddNewtonsoftJson(setup => {
          setup.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
       });
@@ -379,7 +379,7 @@ public void ConfigureServices(IServiceCollection services)
    ConfigureSecurity(services);
 }
 ```
-Use the CORS policy you configured inside the `Configure` of the `Startup.cs` class:
+Use the CORS policy you configured inside the `Configure` of the `Startup.cs` class. Add it at the top of the `Configure` method:
 
 ```c#
 public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RetroGamingContext context)
