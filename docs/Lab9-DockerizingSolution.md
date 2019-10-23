@@ -141,7 +141,7 @@ FROM node:12.13.0-alpine AS build
 
 WORKDIR /app
 
-COPY . .
+COPY RetroGamingSPA/. .
 
 RUN npm install && npm run build
 
@@ -151,9 +151,9 @@ FROM nginx:alpine
 COPY --from=build /app/dist/* /usr/share/nginx/html/
 ```
 
-Try running the docker container from the `RetroGamingSPA` directory:
+Try running the docker container from the `BuildingModernWebApplications` directory:
 ```sh
-docker build -t retrogamingspa:latest .
+docker build -t retrogamingspa:latest RetroGamingSPA/.
 docker run -p 4200:80 retrogamingspa:latest 
 ```
 
@@ -215,7 +215,9 @@ services:
     # ... #
 
   frontend:
-    build: RetroGamingSPA/.
+    build:
+      context: .
+      dockerfile: RetroGamingSPA/Dockerfile
 ```
 
 Configure how to run the `frontend` service in `docker-compose.override.yml`:
