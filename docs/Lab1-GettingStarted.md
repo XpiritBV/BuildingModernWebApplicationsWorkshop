@@ -7,7 +7,6 @@ Goals for this lab:
 - [Download required and optional tooling](#2)
 - [Clone Git repository for lab code](#3)
 - [Prefetch Docker images](#4)
-- [Create Docker cluster on Microsoft Azure](#5)
  
 ## <a name="1"></a>1. Prepare your development laptop
 Make sure that your laptop is up-to-date with the latest security patches. This workshop is specific towards Windows as the operating system for your machine. The labs can also be done on Linux, although this can be a bit more challenging.
