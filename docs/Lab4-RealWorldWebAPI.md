@@ -204,7 +204,7 @@ Again, you will need the `Microsoft.AspNetCore.Mvc.Versioning` NuGet package for
 
 ```sh
 cd RetroGamingWebAPI
-dotnet add package Microsoft.AspNetCore.Mvc.Versioning -v '4.0.0-preview8.19405.7'
+dotnet add package Microsoft.AspNetCore.Mvc.Versioning -v 4.0.0-*
 ```
 Notice that the package is a preview version. This will soon be made final, so you can use that package when it does.
 
