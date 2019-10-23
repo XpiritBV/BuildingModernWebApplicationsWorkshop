@@ -9,15 +9,12 @@ import { Observable } from 'rxjs';
   styleUrls: ["./high-scores.component.scss"]
 })
 export class HighScoresComponent implements OnInit {
-  public highScores: HighScore[];
+  public highScores$: Observable<HighScore[]>;
 
-  constructor(private readonly leaderBoardsService: LeaderboardService) {}
+  constructor(private readonly leaderBoardsService: LeaderboardService) { }
 
   ngOnInit() {
-    this.getHighScores()
-      .subscribe(result => {
-        this.highScores = result;
-      });
+    this.highScores$ = this.getHighScores();
   }
 
   onHighScoreSelected(highScore: HighScore) {
@@ -28,7 +25,7 @@ export class HighScoresComponent implements OnInit {
   private getHighScores(): Observable<Array<HighScore>> {
     return this.leaderBoardsService
       .leaderboardGet({
-        version: "1.0", 
+        version: "1.0",
         format: 'json'
       });
   }
