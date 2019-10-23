@@ -26,7 +26,7 @@ import { ApiModule } from './shared/api/leaderboards-api/api.module';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    ApiModule.forRoot({ rootUrl: 'https://localhost:44366' }),
+    ApiModule.forRoot({ rootUrl: 'https://localhost:5001' }),
   ],
   providers: [],
   bootstrap: [AppComponent]
