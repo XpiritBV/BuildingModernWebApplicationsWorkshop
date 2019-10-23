@@ -41,7 +41,7 @@ This will create an Angular application with the newest version of Angular. When
 1. Would you like to add Angular routing?: **Yes**
 2. Which stylesheet format would you like to use?: **SCSS**
 
-   Sass and Less are also valid options, because they are also CSS Pre-processors. They provide a structured way of writing styles and which compiles to CSS. The Pre-processors do basically the same with some minor differences.
+   Sass and Less are also valid options, because they are also CSS Pre-processors. They provide a structured way of writing styles which compile to CSS. The Pre-processors do basically the same with some minor differences.
 
 ### 2. Switch to application directory
 
