@@ -3,7 +3,7 @@ FROM node:alpine AS build
 
 WORKDIR /app
 
-COPY . .
+COPY RetroGamingSPA/. .
 
 RUN npm install && npm run build
 
