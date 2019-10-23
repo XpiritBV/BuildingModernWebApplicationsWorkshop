@@ -197,4 +197,4 @@ You have just learned some of the basic commands in the Docker CLI to manage bot
 
 Keep the container with the SQL Server developer instance running, because you will need it in the next lab.
 
-Continue with [Lab 9 - Dockerizing .NET Core](Lab9-DockerizingNETCore.md).
+Continue with [Lab 9 - Dockerizing the solution](Lab9-DockerizingSolution.md).

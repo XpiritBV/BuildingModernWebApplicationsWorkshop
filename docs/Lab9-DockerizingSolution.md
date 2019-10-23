@@ -1,6 +1,6 @@
-# Lab 9 - Dockerizing a .NET Core application
+# Lab 9 - Dockerizing the solution
 
-During this lab you will take an existing application and port it to use Docker containers.
+During this lab you will take the existing solution and port it to use Docker containers.
 
 Goals for this lab:
 - [Run existing application](#run)
@@ -13,15 +13,13 @@ Goals for this lab:
 ## <a name="run"></a>Run existing application
 You will first start with running the existing ASP.NET Core Web API  from Visual Studio. Make sure you have cloned the Git repository, or return to [Lab 1 - Getting Started](Lab1-GettingStarted.md) to clone it now if you do not have the sources. Switch to the `StartDocker` branch by using this command:
 
-//TODO create the startDocker branch
-
 ```cmd
-git checkout startDocker
+git checkout StartDocker
 ```
 
 > ##### Important
 >
-> Make sure you have switched to the `startDocker` branch to use the right .NET solution. If you are still on the `master` branch, you will use the completed solution. 
+> Make sure you have switched to the `StartDocker` branch to use the right .NET solution. If you are still on the `master` branch, you will use the completed solution. 
 >
 > Also verify you have configured 'Docker Desktop' to run Linux containers.
 >
@@ -207,6 +205,56 @@ The command will `up` (meaning 'start') the composition and perform a build and 
 
 > You can also use this in your build pipeline to perform the build and publishing of the binaries required to create the container images of the solution without the need for Visual Studio 2019 or Code.
 
+### Add the Angular application to Docker Compose
+
+Add a `frontend` service to `docker-compose.yml`
+
+```yml
+services:
+  retrogamingwebapi:
+    # ... #
+
+  frontend:
+    build: RetroGamingSPA/.
+```
+
+Configure how to run the `frontend` service in `docker-compose.override.yml`:
+
+```yml
+services:
+  retrogamingwebapi:
+    # ... #
+
+  frontend:
+    ports:
+      - "4200:80"
+```
+
+Start the following composition command at the root `BuildingModernWebApplications` where the Docker Compose YAML files are located:
+
+```cmd
+docker-compose up
+```
+
+Change the url of the Angular application API rootUrl in `AppModule` in file `RetroGamingSPA/src/app/app.module.ts` to the configured API port in the `docker-compose.override.yml`
+
+```ts
+@NgModule({
+  declarations: [
+    /* ... */
+  ],
+  imports: [
+    /* ... */
+    ApiModule.forRoot({ rootUrl: 'https://localhost:44366' }),
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+> Run the docker compose and notice that the frontend and backend API integrate once again.
+
 ## Docker Compose in Visual Studio 2019
 
 The tooling support of Visual Studio 2019 for Docker and Docker Compose takes care of compiling the sources and building images for you. You do not need a build file like you have just used.
@@ -250,6 +298,12 @@ Now that your application is running the Web API project in a Docker container, 
 Go ahead and add the definition for a container service in the `docker-compose.override.yml` file.
 
 ```yaml
+retrogamingwebapi:
+    # ... #
+    depends_on:
+      - "sqlserver"
+
+
 sqlserver:
   image: mcr.microsoft.com/mssql/server
   environment:
@@ -260,16 +314,16 @@ sqlserver:
     - "5433:1433"
 ```
 
-Remember that from the Docker CLI you used many environment variables to bootstrap the container instance. Go back to the previous lab to check what these are.
+Also make `retrogamingwebapi` depend on `sqlserver`, so that the services are executed in the correct order.
 
-> ##### Which additional changes are needed?
+> #### Which additional changes are needed?
 > Stop and think about any other changes that might be required to take into account that the database server is now also running in a container.
 
 Start the solution by pressing `F5`. See if it works correctly. Timebox your efforts to try to fix any errors.
 
 As it turns out your connection string to the database is no longer valid. When running inside the composition, services such as the Web API and SQL Server instance are resolved by their internal name. Special addresses like 127.0.0.1, localhost or your machine name have a different meaning and do not resolve correctly. 
 
-> ##### Hint
+> #### Hint
 > Changing the setting in the `appsettings.json` file will work and you could choose to do so for now. It does mean that the setting for running without container will not work anymore. So, what other place can you think of that might work?
 
 You will need to change the connection string for the Web API to reflect the new way of hosting of the database. Add a new environment variable for the connection string of the leaderboard.webapi service in the `docker-compose.override.yml` file:
