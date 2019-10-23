@@ -5,7 +5,7 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>283ab5eb-b1e2-48ea-8081-269a3e7993d6</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/openapi</DockerServiceUrl>
     <DockerServiceName>retrogamingwebapi</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>

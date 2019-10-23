@@ -87,3 +87,4 @@ rcf/
 
 istio-1.2.5/
 .vscode/settings.json
+src/RetroGamingWebAPI/RetroGamingWebAPI.xml

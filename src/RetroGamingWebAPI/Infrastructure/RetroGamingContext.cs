@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RetroGamingWebAPI.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RetroGamingWebAPI.Infrastructure
 {
@@ -16,7 +12,11 @@ namespace RetroGamingWebAPI.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Gamer>().ToTable("Gamers");
+            modelBuilder.Entity<Gamer>().ToTable("Gamers")
+                .HasMany(x => x.Scores)
+                .WithOne()
+                .HasForeignKey(x => x.GamerId);
+
             modelBuilder.Entity<Score>().ToTable("Scores");
         }
 

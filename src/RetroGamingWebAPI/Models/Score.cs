@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RetroGamingWebAPI.Models
+﻿namespace RetroGamingWebAPI.Models
 {
     public class Score
     {
@@ -12,7 +6,6 @@ namespace RetroGamingWebAPI.Models
         public int Points { get; set; }
         public string Game { get; set; }
         public int GamerId { get; set; }
-        [ForeignKey("GamerId")]
         public Gamer Gamer { get; set; }
     }
 }

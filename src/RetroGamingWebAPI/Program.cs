@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +22,7 @@ namespace RetroGamingWebAPI
                 })
                 .ConfigureLogging(builder =>
                 {
-                    IConfiguration configuration = builder.Services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+                    var configuration = builder.Services.BuildServiceProvider().GetRequiredService<IConfiguration>();
                     builder.AddApplicationInsights(configuration["ApplicationInsights:InstrumentationKey"]);
                     builder.AddFilter<ApplicationInsightsLoggerProvider>("", LogLevel.Information);
                 }

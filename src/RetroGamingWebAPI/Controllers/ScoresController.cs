@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NSwag.Annotations;
 using RetroGamingWebAPI.Infrastructure;
 using RetroGamingWebAPI.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RetroGamingWebAPI.Controllers
 {
@@ -29,42 +28,49 @@ namespace RetroGamingWebAPI.Controllers
 
         [MapToApiVersion("2.0")]
         [HttpGet("{game}")]
-        public async Task<IEnumerable<Score>> Get(string game)
+        public async Task<ActionResult<IEnumerable<Score>>> GetAsync(string game, CancellationToken cancellationToken)
         {
-            var scores = context.Scores.Where(s => s.Game == game).Include(s => s.Gamer);
-            return await scores.ToListAsync().ConfigureAwait(false);
+            var scores = await context.Scores
+                .Where(s => s.Game == game)
+                .Include(s => s.Gamer)
+                .ToListAsync(cancellationToken);
+
+            return Ok(scores);
         }
 
         [HttpPost("{nickname}/{game}")]
-        public async Task PostScore(string nickname, string game, [FromBody] int points)
+        public async Task<ActionResult> PostScore(string nickname, string game, [FromBody] int points, CancellationToken cancellationToken)
         {
             // Lookup gamer based on nickname
-            Gamer gamer = await context.Gamers
-                  .FirstOrDefaultAsync(g => g.Nickname.ToLower() == nickname.ToLower())
-                  .ConfigureAwait(false);
+            var gamer = await context.Gamers
+                  .FirstOrDefaultAsync(g => g.Nickname.ToLower() == nickname.ToLower(), cancellationToken);
 
-            if (gamer == null) return;
+            if (gamer == null) return BadRequest();
 
             // Find highest score for game
             var score = await context.Scores
                   .Where(s => s.Game == game && s.Gamer == gamer)
                   .OrderByDescending(s => s.Points)
-                  .FirstOrDefaultAsync()
-                  .ConfigureAwait(false);
+                  .FirstOrDefaultAsync(cancellationToken);
 
             if (score == null)
             {
                 score = new Score() { Gamer = gamer, Points = points, Game = game };
-                await context.Scores.AddAsync(score);
+                await context.Scores.AddAsync(score, cancellationToken);
             }
             else
             {
-                if (score.Points > points) return;
+                if (score.Points > points)
+                    return BadRequest();
+
                 score.Points = points;
+
             }
-            await context.SaveChangesAsync().ConfigureAwait(false);
+            await context.SaveChangesAsync(cancellationToken);
 
             mailService.SendMail($"New high score of {score.Points} for game '{score.Game}'");
+
+            return Ok();
         }
     }
 }
