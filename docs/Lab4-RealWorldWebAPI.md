@@ -287,7 +287,7 @@ public void ConfigureServices(IServiceCollection services)
 
    services
       .AddControllers(options => { /* ... */ })
-      .AddXmlSerializerFormatters();   
+      .AddXmlSerializerFormatters()  
       .AddNewtonsoftJson(setup => {
          setup.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
       });
